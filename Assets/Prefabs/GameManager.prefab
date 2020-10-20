@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7464251954796501850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7464251954796501851}
+  - component: {fileID: 7464251954796501849}
+  - component: {fileID: 7464251954796501848}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7464251954796501851
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464251954796501850}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.5, y: 3.5, z: -11.072272}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7464251954796501849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464251954796501850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b7825c893e83704199cca73b2635579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelStartDelay: 2
+  playerStarPoints: 0
+  playerSteps: 0
+  playerLives: 3
+  playersTurn: 1
+--- !u!114 &7464251954796501848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7464251954796501850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 724cb336be5aebc43a3d6761abd82751, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 10
+  rows: 8
+  starCount:
+    minimum: 1
+    maximum: 5
+  door: {fileID: 1309374788291126625, guid: 0bec6b2d39704f14a8b4cad7d899ba30, type: 3}
+  floorTiles:
+  - {fileID: 2347262100232561466, guid: 32db46c3c97799a4c93e157ee274dfa0, type: 3}
+  wallTiles:
+  - {fileID: 8195764945466764389, guid: 79f4008a683fbd540b065b91ba687a08, type: 3}
+  starTiles:
+  - {fileID: 2853618792923803394, guid: 860120625d0e46640b7a6e169d7de7d1, type: 3}
+  enemyTiles:
+  - {fileID: 6943582503353536752, guid: f3ceb08e9036bbb4bb945dcd49393e23, type: 3}
