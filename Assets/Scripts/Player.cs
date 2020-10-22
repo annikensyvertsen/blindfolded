@@ -51,30 +51,57 @@ public class Player : MovingObject
 
     void Update()
     {
-        //if (!GameManager.instance.playersTurn) return;
+        //check that it can only move one step at a time
+        int keyCounter = 0; 
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Debug.Log("keyup");
+            keyCounter ++;
         }
-        int horizontal = 0;
-        int vertical = 0;
-
-        //Input.GetAxisRaw: Returns the value of the virtual axis identified by axisName with no smoothing filtering applied.
-        horizontal = (int)(Input.GetAxisRaw("Horizontal"));
-        vertical = (int)(Input.GetAxisRaw("Vertical"));
-
-        if (horizontal != 0)
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            vertical = 0;
-
+            keyCounter++;
         }
-
-        if (horizontal != 0 || vertical != 0)
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            AttemptMove(horizontal, vertical);
-
+            keyCounter++;
         }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            keyCounter++;
+        }
+        if (keyCounter == 1)
+        {
+
+            //Debug.Log("player position: " + GameObject.Find("Player").transform.position);
+            //Debug.Log("position 1: " + GameObject.Find("Player").transform.position[1]);
+            Debug.Log("input string: " + Input.inputString);
+            foreach (char c in Input.inputString)
+            {
+                Debug.Log("char: " + c); 
+            }
+
+
+            int horizontal = 0;
+            int vertical = 0;
+
+            //Input.GetAxisRaw: Returns the value of the virtual axis identified by axisName with no smoothing filtering applied.
+            horizontal = (int)(Input.GetAxisRaw("Horizontal"));
+            vertical = (int)(Input.GetAxisRaw("Vertical"));
+
+            if (horizontal != 0)
+            {
+                vertical = 0;
+
+            }
+
+            if (horizontal != 0 || vertical != 0)
+            {
+                AttemptMove(horizontal, vertical);
+
+            }
+        }
+     
 
         
 
@@ -83,21 +110,18 @@ public class Player : MovingObject
 
     protected override void AttemptMove (int xDir, int yDir)
     {
-        //every time the player moves, points are subtracted 
-        //TODO: later will change this to adding points per move, since the goal is as few steps as possible
-        // stars--;
-        //Debug.Log("steps before withdraw: " + steps);
+        //every time the player moves, steps are added. 
+        
         steps++;
-        //Debug.Log("steps after withdraw: " + steps);
 
-       // starText.text = "Stars: " + stars;
+        //TODO: sjekke her eller i update eller i move -> slik at den ikke går ut av banen
+
         stepText.text = "Steps: " + steps;
 
         base.AttemptMove(xDir, yDir);
         RaycastHit2D hit;
         CheckIfGameOver();
 
-        //GameManager.instance.playersTurn = false;
     }
 
     private void OnTriggerEnter2D (Collider2D other)
@@ -107,7 +131,6 @@ public class Player : MovingObject
             Invoke("Restart", restartLevelDelay);
             enabled = false;
         }
-        // denne fungerer ikke.
         else if( other.tag == "Star")
         {
 

@@ -11,13 +11,16 @@ public abstract class MovingObject : MonoBehaviour
     private Rigidbody2D rb2D;
     private float inverseMoveTime; //used to make movement more efficient
 
+    public Vector3 spawn;
 
 
 
     // Start is called before the first frame update
     protected virtual void Start()
     {
- 
+        //set the start position of the player
+        spawn = new Vector3(0, 0, 0);
+        transform.position = spawn;
 
         //get component references to BoxCollider2D and Rigidbody2D
         boxCollider = GetComponent<BoxCollider2D>(); 
@@ -36,16 +39,25 @@ public abstract class MovingObject : MonoBehaviour
         //calculate end position based on the direction parameters passed in when calling move
         Vector2 end = start + new Vector2 (xDir, yDir);
 
+        end[0] = (int)end[0];
+        end[1] = (int)end[1];
         //disable boxCollider so linecast doesn't hit this objects own collider
         boxCollider.enabled = false;
 
         //cast a line from start point to end point by checking collision on blockinglayer
         hit = Physics2D.Linecast(start, end, blockingLayer);
+        if (end[0] == -1 || end[1] == -1 || end[0] == (BoardManager.columns) || end[1] == (BoardManager.rows))
+        {
+            return false;
+        }
 
         //re-enable boxCollider after linecast
         boxCollider.enabled = true;
+        Debug.Log("end: " + end);
+        //check if you are at the edge of the board
+        
         //check if anything was hit
-        if(hit.transform == null)
+        if (hit.transform == null)
         {
             //if nothing was hit, start smoothMovement co-routine passing in the vector2 end as destination
             StartCoroutine(SmoothMovement (end));
@@ -76,20 +88,6 @@ public abstract class MovingObject : MonoBehaviour
         }
     }
 
-   /* protected virtual void AttemptMove<T>  (int xDir, int yDir) where T : Component
-    {
-        RaycastHit2D hit;
-        bool canMove = Move(xDir, yDir, out hit);
-
-        if (hit.transform == null)
-            return;
-
-        T hitComponent = hit.transform.GetComponent<T>();
-
-        if (!canMove && hitComponent != null)
-            OnCantMove(hitComponent);
-    }
-    */
 
     protected virtual void AttemptMove(int xDir, int yDir) 
     {

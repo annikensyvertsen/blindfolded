@@ -18,8 +18,8 @@ public class BoardManager : MonoBehaviour
             maximum = max;
         }
     }
-    public int columns = 5;
-    public int rows = 5;
+    public static int columns = 8;
+    public static int rows = 8;
 
     public Count starCount = new Count(1, 2);
 
@@ -35,11 +35,10 @@ public class BoardManager : MonoBehaviour
 
     void InitialiseList() //clears our list gridpositions and prepares it to generate new board
     {
-
         gridPositions.Clear();
-        for (int x = 1; x < columns-1; x++) //loop throug x-axis/columns
+        for (int x = 1; x < columns; x++) //loop throug x-axis/columns
         {
-            for (int y = 1; y < rows-1; y++) // whithin each loop, loop through y axis (rows)
+            for (int y = 1; y < rows; y++) // whithin each loop, loop through y axis (rows)
             {
                 gridPositions.Add(new Vector3(x, y, 0f)); // at each index, add a new vector3 to our list with the x and y coordinates of that position
             }
@@ -49,20 +48,19 @@ public class BoardManager : MonoBehaviour
     void BoardSetup() //sets up outer walls and floor of the game board
     {
         boardHolder = new GameObject ("Board").transform;
-
-        for (int x = -1; x < columns + 1; x+=1) // loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles
+        for (int x = 0; x < columns; x+=1) // loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles
         {
-            for (int y = -1; y < rows + 1; y+=1) //loop along y-axis, starting from -1 to place floor tile prefabs and prepare to instansiate it
+            for (int y = 0; y < rows; y+=1) //loop along y-axis, starting from -1 to place floor tile prefabs and prepare to instansiate it
             {
                 GameObject toInstantiate = floorTiles[0];
 
-               // if (x == -1 || x == columns || y == -1 || y == rows)
-                 //   toInstantiate = wallTiles[0];
                 GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
                 //corresponing to current grid position in loop, cast it to GameObject
                 instance.transform.SetParent(boardHolder);
             }
         }
+       
+        
     }
 
     Vector3 RandomPosition()
@@ -71,11 +69,13 @@ public class BoardManager : MonoBehaviour
 
         Vector3 randomPosition = gridPositions[randomIndex];
         gridPositions.RemoveAt(randomIndex);
+
         return randomPosition;
     }
 
     void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum) //LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
     {
+        //TODO - her må jeg gjøre en sjekk, sånn at verken stjerner eller miner blir plassert der man starter 
         int objectCount = Random.Range(minimum, maximum + 1);
         for (int i = 0; i < objectCount; i++)
         {
@@ -89,9 +89,11 @@ public class BoardManager : MonoBehaviour
     {
         BoardSetup();
         InitialiseList();
+
         LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum);
         int enemyCount = (int)Mathf.Log(level, 2f);
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
+
         Instantiate (door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
 
     }

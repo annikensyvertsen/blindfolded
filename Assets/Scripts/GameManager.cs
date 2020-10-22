@@ -59,9 +59,12 @@ public class GameManager : MonoBehaviour
     {
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
+
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
+
         levelText.text = "Level " + level;
+
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
 
