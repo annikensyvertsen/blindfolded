@@ -13,15 +13,28 @@ public class GameManager : MonoBehaviour
 
     public int playerStarPoints = 0;
     public int playerSteps = 0;
-    public int playerLives = 3; 
+    public int playerLives = 3;
+
+    public int remainingLevelViews = 3;
+
+    public bool seeWorld = false;
 
     [HideInInspector] public bool playersTurn = true;
 
 
     private int level = 1;                                    //Current level number, expressed in game as "Level 1".
     private Text levelText;
+
+    private int remainingViews;
+    public Text viewLevelText;
+
+
     private GameObject levelImage;
     private bool doingSetup = true;
+
+
+    public float timeRemaining = 3;
+    public bool timerIsRunning = false;
 
     //Awake is always called before any Start functions
     void Awake()
@@ -48,9 +61,14 @@ public class GameManager : MonoBehaviour
         InitGame();
     }
 
+
     private void OnLevelWasLoaded (int index)
     {
         level++;
+
+        Debug.Log("star positions at each level" + BoardManager.starPositions + index);
+        BoardManager.starPositions = new List<Vector3>();
+        BoardManager.enemyPositions = new List<Vector3>();
 
         InitGame();
     }
@@ -62,8 +80,10 @@ public class GameManager : MonoBehaviour
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
-
         levelText.text = "Level " + level;
+
+        viewLevelText = GameObject.Find("ViewText").GetComponent<Text>();
+        viewLevelText.text = remainingLevelViews + "/3";
 
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
@@ -79,6 +99,21 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //Check that playersTurn or enemiesMoving or doingSetup are not currently true.
+        if (timerIsRunning)
+        {
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                Debug.Log("update Timeremaining: " + timeRemaining);
+            }
+            else
+            {
+                seeWorld = false;
+                BoardManager.HideElements(seeWorld);
+                timeRemaining = 0;
+                timerIsRunning = false;
+            }
+        }
         if (playersTurn  || doingSetup)
             //If any of these are true, return and do not start MoveEnemies.
             return;

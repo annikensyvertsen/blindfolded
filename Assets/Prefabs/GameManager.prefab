@@ -48,7 +48,10 @@ MonoBehaviour:
   playerStarPoints: 0
   playerSteps: 0
   playerLives: 3
+  remainingLevelViews: 3
+  seeWorld: 0
   playersTurn: 1
+  viewLevelText: {fileID: 0}
 --- !u!114 &7464251954796501848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61,13 +64,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 724cb336be5aebc43a3d6761abd82751, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  columns: 10
-  rows: 8
   starCount:
     minimum: 1
     maximum: 5
   door: {fileID: 1309374788291126625, guid: 0bec6b2d39704f14a8b4cad7d899ba30, type: 3}
   floorTiles:
+  - {fileID: 2347262100232561466, guid: 32db46c3c97799a4c93e157ee274dfa0, type: 3}
+  hideFloorTiles:
   - {fileID: 2347262100232561466, guid: 32db46c3c97799a4c93e157ee274dfa0, type: 3}
   wallTiles:
   - {fileID: 8195764945466764389, guid: 79f4008a683fbd540b065b91ba687a08, type: 3}

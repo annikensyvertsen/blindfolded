@@ -41,11 +41,13 @@ public abstract class MovingObject : MonoBehaviour
 
         end[0] = (int)end[0];
         end[1] = (int)end[1];
+
         //disable boxCollider so linecast doesn't hit this objects own collider
         boxCollider.enabled = false;
 
         //cast a line from start point to end point by checking collision on blockinglayer
         hit = Physics2D.Linecast(start, end, blockingLayer);
+        //BoardManager.enemyPositions.ForEach(p => Debug.Log("enemy p: " + p));
         if (end[0] == -1 || end[1] == -1 || end[0] == (BoardManager.columns) || end[1] == (BoardManager.rows))
         {
             return false;
@@ -53,13 +55,11 @@ public abstract class MovingObject : MonoBehaviour
 
         //re-enable boxCollider after linecast
         boxCollider.enabled = true;
-        Debug.Log("end: " + end);
         //check if you are at the edge of the board
         
         //check if anything was hit
         if (hit.transform == null)
         {
-            //if nothing was hit, start smoothMovement co-routine passing in the vector2 end as destination
             StartCoroutine(SmoothMovement (end));
 
             //return true to say that move was successfull

@@ -26,12 +26,24 @@ public class BoardManager : MonoBehaviour
     public GameObject door;
 
     public GameObject[] floorTiles;
+    public static GameObject[] hideFloorTiles;
+
     public GameObject[] wallTiles;
     public GameObject[] starTiles;
     public GameObject[] enemyTiles;
 
-    private Transform boardHolder;
+    private static GameObject[] starCopyTiles;
+    private static GameObject[] enemyCopyTiles;
+
+    private static Transform boardHolder;
+    private static Transform starHolder;
+    private static Transform enemyHolder;
+
+    private bool visibility; 
+
     private List<Vector3> gridPositions = new List<Vector3> (); // a list of possible locations to place tiles
+    //private bool seeWorld = GameManager.instance.seeWorld; 
+
 
     void InitialiseList() //clears our list gridpositions and prepares it to generate new board
     {
@@ -45,22 +57,85 @@ public class BoardManager : MonoBehaviour
         }
     }
 
-    void BoardSetup() //sets up outer walls and floor of the game board
+    void BoardSetup() //sets up floor of the game board
     {
         boardHolder = new GameObject ("Board").transform;
-        for (int x = 0; x < columns; x+=1) // loop along x axis, starting from -1 (to fill corner) with floor or outerwall edge tiles
+        starHolder = new GameObject("Star").transform;
+        enemyHolder = new GameObject("Enemy").transform;
+
+
+        for (int x = 0; x < columns; x+=1) // loop along x axis, starting from 0 (to fill corner) with floor or outerwall edge tiles
         {
-            for (int y = 0; y < rows; y+=1) //loop along y-axis, starting from -1 to place floor tile prefabs and prepare to instansiate it
+            for (int y = 0; y < rows; y+=1) //loop along y-axis, starting from 0 to place floor tile prefabs and prepare to instansiate it
             {
                 GameObject toInstantiate = floorTiles[0];
 
                 GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
                 //corresponing to current grid position in loop, cast it to GameObject
                 instance.transform.SetParent(boardHolder);
+                //enemyPositions.ForEach(p => Debug.Log("enemy p: " + p));
+
             }
+        }    
+    }
+
+    //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels
+    public static void HideElements(bool seeWorld)
+    {
+        //visibility = seeWorld;
+        //should be called with true at the start
+        if (seeWorld == true)
+        {
+            //show elements
+            starPositions.ForEach(tile =>
+            {
+                GameObject tileChoice = starCopyTiles[Random.Range(0, starCopyTiles.Length)];
+                GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                instance.transform.SetParent(starHolder);
+            });
+            enemyPositions.ForEach(tile =>
+            {
+                GameObject tileChoice = enemyCopyTiles[Random.Range(0, enemyCopyTiles.Length)];
+
+                //og her
+                GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                instance.transform.SetParent(enemyHolder);
+            });
+            GameManager.instance.timeRemaining = 3;
+            GameManager.instance.timerIsRunning = true;
+
         }
-       
-        
+        else
+        {
+            //hide elements 
+            starPositions.ForEach(tile =>
+            {
+                float x = tile[0];
+                float y = tile[1];
+                foreach (Transform child in starHolder)
+                {
+                    if (child.position == tile)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+
+            });
+            enemyPositions.ForEach(tile =>
+            {
+                float x = tile[0];
+                float y = tile[1];
+                foreach (Transform child in enemyHolder)
+                {
+                    if (child.position == tile)
+                    {
+                        Destroy(child.gameObject);
+                    }
+                }
+            });
+            GameManager.instance.timerIsRunning = false;
+
+        }
     }
 
     Vector3 RandomPosition()
@@ -69,32 +144,63 @@ public class BoardManager : MonoBehaviour
 
         Vector3 randomPosition = gridPositions[randomIndex];
         gridPositions.RemoveAt(randomIndex);
-
         return randomPosition;
     }
+    public static List<Vector3> enemyPositions = new List<Vector3>();
+    public static List<Vector3> starPositions = new List<Vector3>();
 
-    void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum) //LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
+ 
+
+    void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum, string type) //LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
     {
         //TODO - her må jeg gjøre en sjekk, sånn at verken stjerner eller miner blir plassert der man starter 
-        int objectCount = Random.Range(minimum, maximum + 1);
+        int objectCount = Random.Range(minimum, maximum + 1);  
+        
+        //her endrer jeg nå
+
+
         for (int i = 0; i < objectCount; i++)
         {
             Vector3 randomPosition = RandomPosition();
             GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
-            Instantiate(tileChoice, randomPosition, Quaternion.identity);
+
+            GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
+            instance.transform.SetParent(starHolder);
+
+            //før:
+
+            //checks if the type is enemies or stars, and adds it to the belonging position list
+            if (type == "enemies")
+            {
+                enemyPositions.Add(randomPosition);
+                enemyCopyTiles = tileArray;
+
+            }
+            if (type == "stars")
+            {
+                starPositions.Add(randomPosition);
+                starCopyTiles = tileArray;
+
+            }
 
         }
     }
+
+    
+
     public void SetupScene(int level)
     {
         BoardSetup();
+
         InitialiseList();
-
-        LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum);
+        LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum, "stars");
         int enemyCount = (int)Mathf.Log(level, 2f);
-        LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount);
+        LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
 
-        Instantiate (door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
+        HideElements(false);
+
+
+        Instantiate(door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
 
     }
 

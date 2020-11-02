@@ -16,11 +16,13 @@ public class Player : MovingObject
     private int lives; 
     private int steps;
 
+
     public Text stepText;
 
     public Text starText;
 
     public Text lifeText;
+
 
 
     // Start is called before the first frame update
@@ -33,9 +35,11 @@ public class Player : MovingObject
         lives = GameManager.instance.playerLives;
         steps = GameManager.instance.playerSteps; 
 
+
         starText.text = "Stars: " + stars;
         stepText.text = "Steps: " + steps;
-        lifeText.text = "Lives: " + lives; 
+        lifeText.text = "Lives: " + lives;
+
 
         base.Start();
     }
@@ -43,7 +47,7 @@ public class Player : MovingObject
     private void OnDisable()
     {
         GameManager.instance.playerStarPoints = stars;
-        GameManager.instance.playerLives = lives; 
+        GameManager.instance.playerLives = lives;
     }
     // Update is called once per frame
    
@@ -72,15 +76,6 @@ public class Player : MovingObject
         }
         if (keyCounter == 1)
         {
-
-            //Debug.Log("player position: " + GameObject.Find("Player").transform.position);
-            //Debug.Log("position 1: " + GameObject.Find("Player").transform.position[1]);
-            Debug.Log("input string: " + Input.inputString);
-            foreach (char c in Input.inputString)
-            {
-                Debug.Log("char: " + c); 
-            }
-
 
             int horizontal = 0;
             int vertical = 0;
@@ -119,7 +114,6 @@ public class Player : MovingObject
         stepText.text = "Steps: " + steps;
 
         base.AttemptMove(xDir, yDir);
-        RaycastHit2D hit;
         CheckIfGameOver();
 
     }
