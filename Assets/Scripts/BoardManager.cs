@@ -73,14 +73,13 @@ public class BoardManager : MonoBehaviour
                 GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
                 //corresponing to current grid position in loop, cast it to GameObject
                 instance.transform.SetParent(boardHolder);
-                //enemyPositions.ForEach(p => Debug.Log("enemy p: " + p));
 
             }
         }    
     }
 
     //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels
-    public static void HideElements(bool seeWorld)
+    public static void HideElements(bool seeWorld, int timer = 3)
     {
         //visibility = seeWorld;
         //should be called with true at the start
@@ -101,7 +100,7 @@ public class BoardManager : MonoBehaviour
                 GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
                 instance.transform.SetParent(enemyHolder);
             });
-            GameManager.instance.timeRemaining = 3;
+            GameManager.instance.timeRemaining = timer;
             GameManager.instance.timerIsRunning = true;
 
         }
@@ -138,6 +137,7 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+
     Vector3 RandomPosition()
     {
         int randomIndex = Random.Range(0, gridPositions.Count);
@@ -156,8 +156,6 @@ public class BoardManager : MonoBehaviour
         //TODO - her må jeg gjøre en sjekk, sånn at verken stjerner eller miner blir plassert der man starter 
         int objectCount = Random.Range(minimum, maximum + 1);  
         
-        //her endrer jeg nå
-
 
         for (int i = 0; i < objectCount; i++)
         {
@@ -166,8 +164,6 @@ public class BoardManager : MonoBehaviour
 
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
             instance.transform.SetParent(starHolder);
-
-            //før:
 
             //checks if the type is enemies or stars, and adds it to the belonging position list
             if (type == "enemies")

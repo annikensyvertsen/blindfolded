@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
     {
         level++;
 
-        Debug.Log("star positions at each level" + BoardManager.starPositions + index);
         BoardManager.starPositions = new List<Vector3>();
         BoardManager.enemyPositions = new List<Vector3>();
 
@@ -104,7 +103,6 @@ public class GameManager : MonoBehaviour
             if (timeRemaining > 0)
             {
                 timeRemaining -= Time.deltaTime;
-                Debug.Log("update Timeremaining: " + timeRemaining);
             }
             else
             {

@@ -30,6 +30,8 @@ public abstract class MovingObject : MonoBehaviour
         inverseMoveTime = 1f / moveTime;
     }
 
+    public static Vector2 posNow = new Vector2(0, 0);
+
     //move returns true if it is able to move and false if not
     //takes parameters for x direction, y directin and raycasthit3d to check collision
     protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
@@ -38,6 +40,7 @@ public abstract class MovingObject : MonoBehaviour
         Vector2 start = transform.position;
         //calculate end position based on the direction parameters passed in when calling move
         Vector2 end = start + new Vector2 (xDir, yDir);
+        posNow = end;
 
         end[0] = (int)end[0];
         end[1] = (int)end[1];
@@ -99,7 +102,6 @@ public abstract class MovingObject : MonoBehaviour
     }
 
 
-    protected abstract void OnCantMove <T> (T component) where T : Component;
 
     // Update is called once per frame
     void Update()

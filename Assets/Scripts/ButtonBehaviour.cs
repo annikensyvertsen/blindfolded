@@ -18,8 +18,6 @@ public class ButtonBehaviour : MonoBehaviour
             GameManager.instance.viewLevelText.text = count + "/3";
             GameManager.instance.seeWorld = !GameManager.instance.seeWorld;
             BoardManager.HideElements(GameManager.instance.seeWorld);
-            Debug.Log(" timer? " + GameManager.instance.timerIsRunning + "time remaining" + GameManager.instance.timeRemaining);
-
         }
     }
 }

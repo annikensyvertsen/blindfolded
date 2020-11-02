@@ -96,20 +96,15 @@ public class Player : MovingObject
 
             }
         }
-     
-
-        
-
-
     }
 
     protected override void AttemptMove (int xDir, int yDir)
     {
         //every time the player moves, steps are added. 
-        
-        steps++;
+        //xDir = 1 if you move one step to the right, -1 if you move to the left
 
-        //TODO: sjekke her eller i update eller i move -> slik at den ikke går ut av banen
+        steps++;
+        CheckIfSomethingIsHit(xDir, yDir);
 
         stepText.text = "Steps: " + steps;
 
@@ -118,7 +113,42 @@ public class Player : MovingObject
 
     }
 
-    private void OnTriggerEnter2D (Collider2D other)
+    private void CheckIfSomethingIsHit(int xDir, int yDir)
+    {
+        List<Vector3> starPositions = BoardManager.starPositions;
+        List<Vector3> enemyPositions = BoardManager.enemyPositions;
+        
+        List<Vector3> toBeRemoved = new List<Vector3>();
+
+
+        Vector2 now = MovingObject.posNow + new Vector2(xDir, yDir);
+
+        starPositions.ForEach(position =>
+        {
+            if(position[0] == now[0] && position[1] == now[1])
+            {
+                Debug.Log(" a star is hit");
+                BoardManager.HideElements(true, 1);
+                toBeRemoved.Add(position);
+            }
+        });
+        enemyPositions.ForEach(position =>
+        {
+            if (position[0] == now[0] && position[1] == now[1])
+            {
+                Debug.Log(" an enemy is hit");
+                BoardManager.HideElements(true, 1);
+                toBeRemoved.Add(position);
+            }
+        });
+        toBeRemoved.ForEach(elementToRemove =>
+        {
+            starPositions.Remove(elementToRemove);
+        });
+
+    }
+
+private void OnTriggerEnter2D (Collider2D other)
     {
         if(other.tag == "Door")
         {
@@ -141,10 +171,6 @@ public class Player : MovingObject
         }
     }
 
-    protected override void OnCantMove <T> (T component)
-    {
-        //in the tutorial it checks if it hits inner wall here, we dont have inner walls
-    }
 
     private void Restart()
     {
@@ -169,7 +195,5 @@ public class Player : MovingObject
     {
         if (lives <= 0)
             GameManager.instance.GameOver();
-        //if (stars <= 0)
-          //  GameManager.instance.GameOver();
     }
 }
