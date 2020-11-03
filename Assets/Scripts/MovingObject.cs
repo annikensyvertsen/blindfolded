@@ -13,6 +13,9 @@ public abstract class MovingObject : MonoBehaviour
 
     public Vector3 spawn;
 
+    private static bool move = BoardManager.move;
+
+
 
 
     // Start is called before the first frame update
@@ -28,6 +31,7 @@ public abstract class MovingObject : MonoBehaviour
 
         //by storing the reciprocal of the move time we can use it by multiplying instead of dividing, this is more efficient
         inverseMoveTime = 1f / moveTime;
+
     }
 
     public static Vector2 posNow = new Vector2(0, 0);
@@ -96,7 +100,6 @@ public abstract class MovingObject : MonoBehaviour
     {
         RaycastHit2D hit;
         bool canMove = Move(xDir, yDir, out hit);
-
         if (hit.transform == null)
             return;
     }
@@ -106,6 +109,6 @@ public abstract class MovingObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       
+      
     }
 }

@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
 
     public int remainingLevelViews = 3;
 
-    public bool seeWorld = false;
 
     [HideInInspector] public bool playersTurn = true;
 
@@ -35,6 +34,8 @@ public class GameManager : MonoBehaviour
 
     public float timeRemaining = 3;
     public bool timerIsRunning = false;
+    public bool seeWorld = false;
+
 
     //Awake is always called before any Start functions
     void Awake()

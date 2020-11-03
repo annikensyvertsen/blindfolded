@@ -8,7 +8,6 @@ public class ButtonBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
 
-
     public void TaskOnClick()
     {
         if (GameManager.instance.remainingLevelViews > 0)
@@ -18,6 +17,9 @@ public class ButtonBehaviour : MonoBehaviour
             GameManager.instance.viewLevelText.text = count + "/3";
             GameManager.instance.seeWorld = !GameManager.instance.seeWorld;
             BoardManager.HideElements(GameManager.instance.seeWorld);
+            BoardManager.move = false;
+            Debug.Log("hæ" + BoardManager.move);
+
         }
     }
 }

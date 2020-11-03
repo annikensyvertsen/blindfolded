@@ -78,6 +78,9 @@ public class BoardManager : MonoBehaviour
         }    
     }
 
+    public static bool move = true;
+
+
     //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels
     public static void HideElements(bool seeWorld, int timer = 3)
     {
@@ -85,6 +88,7 @@ public class BoardManager : MonoBehaviour
         //should be called with true at the start
         if (seeWorld == true)
         {
+            move = false;
             //show elements
             starPositions.ForEach(tile =>
             {
@@ -106,6 +110,8 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
+            move = true;
+
             //hide elements 
             starPositions.ForEach(tile =>
             {
@@ -163,19 +169,22 @@ public class BoardManager : MonoBehaviour
             GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
 
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
-            instance.transform.SetParent(starHolder);
 
             //checks if the type is enemies or stars, and adds it to the belonging position list
             if (type == "enemies")
             {
                 enemyPositions.Add(randomPosition);
                 enemyCopyTiles = tileArray;
+                instance.transform.SetParent(enemyHolder);
+
 
             }
             if (type == "stars")
             {
                 starPositions.Add(randomPosition);
                 starCopyTiles = tileArray;
+                instance.transform.SetParent(starHolder);
+
 
             }
 
@@ -190,7 +199,16 @@ public class BoardManager : MonoBehaviour
 
         InitialiseList();
         LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum, "stars");
-        int enemyCount = (int)Mathf.Log(level, 2f);
+        int enemyNumber = 1;
+        if(level == 1)
+        {
+            enemyNumber = 0;
+        }
+        else
+        {
+            enemyNumber = level;
+        }
+        int enemyCount = enemyNumber * 2;
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
 
         HideElements(false);

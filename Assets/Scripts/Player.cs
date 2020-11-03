@@ -23,7 +23,7 @@ public class Player : MovingObject
 
     public Text lifeText;
 
-
+    private bool seeWorld = false;
 
     // Start is called before the first frame update
     protected override void Start()
@@ -33,8 +33,9 @@ public class Player : MovingObject
 
         stars = GameManager.instance.playerStarPoints;
         lives = GameManager.instance.playerLives;
-        steps = GameManager.instance.playerSteps; 
+        steps = GameManager.instance.playerSteps;
 
+        seeWorld = GameManager.instance.seeWorld; 
 
         starText.text = "Stars: " + stars;
         stepText.text = "Steps: " + steps;
@@ -74,9 +75,8 @@ public class Player : MovingObject
         {
             keyCounter++;
         }
-        if (keyCounter == 1)
+        if (keyCounter == 1 )
         {
-
             int horizontal = 0;
             int vertical = 0;
 
@@ -102,14 +102,17 @@ public class Player : MovingObject
     {
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
+        if(BoardManager.move == true)
+        {
+            steps++;
+            CheckIfSomethingIsHit(xDir, yDir);
 
-        steps++;
-        CheckIfSomethingIsHit(xDir, yDir);
+            stepText.text = "Steps: " + steps;
 
-        stepText.text = "Steps: " + steps;
-
-        base.AttemptMove(xDir, yDir);
-        CheckIfGameOver();
+            base.AttemptMove(xDir, yDir);
+            CheckIfGameOver();
+        }
+        
 
     }
 
@@ -127,7 +130,6 @@ public class Player : MovingObject
         {
             if(position[0] == now[0] && position[1] == now[1])
             {
-                Debug.Log(" a star is hit");
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
             }
@@ -136,7 +138,6 @@ public class Player : MovingObject
         {
             if (position[0] == now[0] && position[1] == now[1])
             {
-                Debug.Log(" an enemy is hit");
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
             }
@@ -174,7 +175,6 @@ private void OnTriggerEnter2D (Collider2D other)
 
     private void Restart()
     {
-        //Application.LoadLevel(Application.loadedLevel);
         SceneManager.LoadScene(0);
     }
     public void CollectStars()
