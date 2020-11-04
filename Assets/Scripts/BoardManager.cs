@@ -32,6 +32,8 @@ public class BoardManager : MonoBehaviour
     public GameObject[] starTiles;
     public GameObject[] enemyTiles;
 
+    public static bool move = true;
+
     private static GameObject[] starCopyTiles;
     private static GameObject[] enemyCopyTiles;
 
@@ -78,7 +80,6 @@ public class BoardManager : MonoBehaviour
         }    
     }
 
-    public static bool move = true;
 
 
     //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels

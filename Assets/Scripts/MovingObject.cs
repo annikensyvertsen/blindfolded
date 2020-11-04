@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MovingObject : MonoBehaviour
 {
-    public float moveTime = 0.05f; //time it will take for the object to move (seconds)
+    public float moveTime = 0.1f; //time it will take for the object to move (seconds)
     public LayerMask blockingLayer; //collision layer
 
     private BoxCollider2D boxCollider; 
@@ -12,9 +12,6 @@ public abstract class MovingObject : MonoBehaviour
     private float inverseMoveTime; //used to make movement more efficient
 
     public Vector3 spawn;
-
-    private static bool move = BoardManager.move;
-
 
 
 
@@ -36,6 +33,9 @@ public abstract class MovingObject : MonoBehaviour
 
     public static Vector2 posNow = new Vector2(0, 0);
 
+    private bool canMove = true;
+
+    private Vector2 s = new Vector2(5,8);
     //move returns true if it is able to move and false if not
     //takes parameters for x direction, y directin and raycasthit3d to check collision
     protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
@@ -46,8 +46,36 @@ public abstract class MovingObject : MonoBehaviour
         Vector2 end = start + new Vector2 (xDir, yDir);
         posNow = end;
 
+
+
         end[0] = (int)end[0];
         end[1] = (int)end[1];
+        start[0] = (int)start[0];
+        start[1] = (int)start[1];
+        
+        if(s == start)
+        {
+            canMove = false;
+            if (s == new Vector2(0, 0))
+            {
+                s = new Vector2(1, 0);
+            }
+            else
+            {
+                s = new Vector2(0, 0);
+            }
+            StartCoroutine(waiter());
+        }
+        else
+        {
+            canMove = true;
+            s = start;
+        }
+
+
+  
+        Debug.Log("canmove" + canMove);
+
 
         //disable boxCollider so linecast doesn't hit this objects own collider
         boxCollider.enabled = false;
@@ -65,7 +93,7 @@ public abstract class MovingObject : MonoBehaviour
         //check if you are at the edge of the board
         
         //check if anything was hit
-        if (hit.transform == null)
+        if (hit.transform == null && canMove == true)
         {
             StartCoroutine(SmoothMovement (end));
 
@@ -74,6 +102,12 @@ public abstract class MovingObject : MonoBehaviour
         }
         //if something was hit return false
         return false;
+    }
+    IEnumerator waiter()
+    {
+        yield return new WaitForSeconds(1);
+        canMove = true;
+
     }
 
     //co-routine for moving units from one space to next, takes a parameter ent to specify where to move to
@@ -109,6 +143,6 @@ public abstract class MovingObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+       
     }
 }

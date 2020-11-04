@@ -18,7 +18,6 @@ public class ButtonBehaviour : MonoBehaviour
             GameManager.instance.seeWorld = !GameManager.instance.seeWorld;
             BoardManager.HideElements(GameManager.instance.seeWorld);
             BoardManager.move = false;
-            Debug.Log("hæ" + BoardManager.move);
 
         }
     }

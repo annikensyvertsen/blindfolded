@@ -51,7 +51,6 @@ public class Player : MovingObject
         GameManager.instance.playerLives = lives;
     }
     // Update is called once per frame
-   
 
 
     void Update()
@@ -84,14 +83,18 @@ public class Player : MovingObject
             horizontal = (int)(Input.GetAxisRaw("Horizontal"));
             vertical = (int)(Input.GetAxisRaw("Vertical"));
 
+
             if (horizontal != 0)
             {
                 vertical = 0;
 
             }
 
-            if (horizontal != 0 || vertical != 0)
+            if (horizontal != 0 || vertical != 0 )
+
             {
+                Debug.Log("horizontal: " + horizontal + " vertical: " + vertical);
+
                 AttemptMove(horizontal, vertical);
 
             }
@@ -102,7 +105,8 @@ public class Player : MovingObject
     {
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
-        if(BoardManager.move == true)
+ 
+        if (BoardManager.move == true)
         {
             steps++;
             CheckIfSomethingIsHit(xDir, yDir);
