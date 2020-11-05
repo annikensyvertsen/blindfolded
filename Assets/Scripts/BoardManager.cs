@@ -102,7 +102,6 @@ public class BoardManager : MonoBehaviour
     //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels
     public static void HideElements(bool seeWorld, int timer = 3)
     {
-        //visibility = seeWorld;
         //should be called with true at the start
         if (seeWorld == true)
         {
@@ -117,8 +116,6 @@ public class BoardManager : MonoBehaviour
             enemyPositions.ForEach(tile =>
             {
                 GameObject tileChoice = enemyCopyTiles[Random.Range(0, enemyCopyTiles.Length)];
-
-                //og her
                 GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
                 instance.transform.SetParent(enemyHolder);
             });
@@ -129,7 +126,6 @@ public class BoardManager : MonoBehaviour
         else
         {
             move = true;
-
             //hide elements 
             starPositions.ForEach(tile =>
             {
@@ -174,7 +170,7 @@ public class BoardManager : MonoBehaviour
     private List<Vector3> gridXPositions = new List<Vector3>();
     private List<Vector3> gridYPositions = new List<Vector3>();
 
-
+    //returns a random postion along the edges of the board
     Vector3 RandomWallPosition(string direction)
     {
         
@@ -267,8 +263,6 @@ public class BoardManager : MonoBehaviour
     public void SetupScene(int level)
     {
         BoardSetup();
-
-     
 
         InitialiseList();
         LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum, "stars");

@@ -27,6 +27,8 @@ public class GameManager : MonoBehaviour
     private int remainingViews;
     public Text viewLevelText;
 
+    public GameObject viewSeeWorldButton;
+
 
     private GameObject levelImage;
     private bool doingSetup = true;
@@ -85,6 +87,9 @@ public class GameManager : MonoBehaviour
         viewLevelText = GameObject.Find("ViewText").GetComponent<Text>();
         viewLevelText.text = remainingLevelViews + "/3";
 
+        viewSeeWorldButton = GameObject.Find("SeeWorldButton");
+        viewSeeWorldButton.SetActive(false);
+
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
 
@@ -94,6 +99,8 @@ public class GameManager : MonoBehaviour
     public void HideLevelImage()
     {
         levelImage.SetActive(false);
+        viewSeeWorldButton.SetActive(true);
+
         doingSetup = false;
     }
     void Update()

@@ -866,7 +866,7 @@ GameObject:
   - component: {fileID: 1133363978}
   - component: {fileID: 1133363977}
   m_Layer: 5
-  m_Name: Text
+  m_Name: SeeWorldText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -945,7 +945,7 @@ GameObject:
   - component: {fileID: 1198271781}
   - component: {fileID: 1198271780}
   m_Layer: 5
-  m_Name: Button
+  m_Name: SeeWorldButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
