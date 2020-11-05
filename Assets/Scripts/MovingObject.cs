@@ -35,7 +35,7 @@ public abstract class MovingObject : MonoBehaviour
 
     private bool canMove = true;
 
-    private Vector2 s = new Vector2(5,8);
+    private Vector2 previousStartPosition = new Vector2(5,8);
     //move returns true if it is able to move and false if not
     //takes parameters for x direction, y directin and raycasthit3d to check collision
     protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
@@ -53,28 +53,29 @@ public abstract class MovingObject : MonoBehaviour
         start[0] = (int)start[0];
         start[1] = (int)start[1];
         
-        if(s == start)
+        //this function makes it impossible to go digaonally, since if you press two buttons quick it will skip one step
+        //the function checks is the start-vector is the same to times in a row, and if it is then it is impossible to move while it resets
+        //kind of "hacky" solution, should be improved when possible, but works for the purpose now
+        if(previousStartPosition == start)
         {
             canMove = false;
-            if (s == new Vector2(0, 0))
+            //here we set the previousStartPosition to a new value so it will be possible to move again
+            //just a random value, but to be sure that it is not the same as the previous we have to alternatives
+            if (previousStartPosition == new Vector2(0, 0))
             {
-                s = new Vector2(1, 0);
+                previousStartPosition = new Vector2(1, 0);
             }
             else
             {
-                s = new Vector2(0, 0);
+                previousStartPosition = new Vector2(0, 0);
             }
             StartCoroutine(waiter());
         }
         else
         {
             canMove = true;
-            s = start;
+            previousStartPosition = start;
         }
-
-
-  
-        Debug.Log("canmove" + canMove);
 
 
         //disable boxCollider so linecast doesn't hit this objects own collider
@@ -82,7 +83,6 @@ public abstract class MovingObject : MonoBehaviour
 
         //cast a line from start point to end point by checking collision on blockinglayer
         hit = Physics2D.Linecast(start, end, blockingLayer);
-        //BoardManager.enemyPositions.ForEach(p => Debug.Log("enemy p: " + p));
         if (end[0] == -1 || end[1] == -1 || end[0] == (BoardManager.columns) || end[1] == (BoardManager.rows))
         {
             return false;

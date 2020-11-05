@@ -93,8 +93,6 @@ public class Player : MovingObject
             if (horizontal != 0 || vertical != 0 )
 
             {
-                Debug.Log("horizontal: " + horizontal + " vertical: " + vertical);
-
                 AttemptMove(horizontal, vertical);
 
             }

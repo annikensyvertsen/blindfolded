@@ -44,7 +44,6 @@ public class BoardManager : MonoBehaviour
     private bool visibility; 
 
     private List<Vector3> gridPositions = new List<Vector3> (); // a list of possible locations to place tiles
-    //private bool seeWorld = GameManager.instance.seeWorld; 
 
 
     void InitialiseList() //clears our list gridpositions and prepares it to generate new board
@@ -57,6 +56,8 @@ public class BoardManager : MonoBehaviour
                 gridPositions.Add(new Vector3(x, y, 0f)); // at each index, add a new vector3 to our list with the x and y coordinates of that position
             }
         }
+        //fill list with tiles that are along the walls
+       
     }
 
     void BoardSetup() //sets up floor of the game board
@@ -76,8 +77,24 @@ public class BoardManager : MonoBehaviour
                 //corresponing to current grid position in loop, cast it to GameObject
                 instance.transform.SetParent(boardHolder);
 
+                //adds positions along the wall
+                if(!(x == 0 && y == 0) && !(x == rows && y == columns))
+                {
+                    if (x == 0 || x == rows)
+                    {
+                        gridXPositions.Add(new Vector3(x, y, 0f));
+                    }
+                    if (y == 0 || y == columns)
+                    {
+                        gridYPositions.Add(new Vector3(x, y, 0f));
+                    }
+                }
+                
+
             }
-        }    
+        }
+      
+
     }
 
 
@@ -148,11 +165,38 @@ public class BoardManager : MonoBehaviour
     Vector3 RandomPosition()
     {
         int randomIndex = Random.Range(0, gridPositions.Count);
-
+       
         Vector3 randomPosition = gridPositions[randomIndex];
         gridPositions.RemoveAt(randomIndex);
         return randomPosition;
     }
+
+    private List<Vector3> gridXPositions = new List<Vector3>();
+    private List<Vector3> gridYPositions = new List<Vector3>();
+
+
+    Vector3 RandomWallPosition(string direction)
+    {
+        
+        int randomIndex;
+        Vector3 randomPosition;
+
+        if (direction == "x")
+        {
+            randomIndex = Random.Range(0, columns-1);
+            randomPosition = gridXPositions[randomIndex];
+            gridXPositions.RemoveAt(randomIndex);
+        }
+        else
+        {
+            randomIndex = Random.Range(0, rows-1);
+            randomPosition = gridYPositions[randomIndex];
+            gridYPositions.RemoveAt(randomIndex);
+        }
+        
+        return randomPosition;
+    }
+
     public static List<Vector3> enemyPositions = new List<Vector3>();
     public static List<Vector3> starPositions = new List<Vector3>();
 
@@ -170,11 +214,14 @@ public class BoardManager : MonoBehaviour
             GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
 
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
-
+            
             //checks if the type is enemies or stars, and adds it to the belonging position list
             if (type == "enemies")
             {
-                enemyPositions.Add(randomPosition);
+                if (!enemyPositions.Contains(randomPosition))
+                {
+                    enemyPositions.Add(randomPosition);
+                }
                 enemyCopyTiles = tileArray;
                 instance.transform.SetParent(enemyHolder);
 
@@ -186,20 +233,49 @@ public class BoardManager : MonoBehaviour
                 starCopyTiles = tileArray;
                 instance.transform.SetParent(starHolder);
 
-
             }
 
+            
         }
     }
 
-    
+    //makes sure some enemies are created in random places along the walls to make it more difficult
+    void LayoutObjectsAlongTheWalls(GameObject[] tileArray)
+    {
+        GameObject enemyTile = tileArray[Random.Range(0, tileArray.Length)];
+
+        Vector3 wallXPosition = RandomWallPosition("x");
+        Vector3 wallYPosition = RandomWallPosition("y");
+
+        GameObject instanceX = Instantiate(enemyTile, wallXPosition, Quaternion.identity) as GameObject;
+        GameObject instanceY = Instantiate(enemyTile, wallYPosition, Quaternion.identity) as GameObject;
+
+        if (!enemyPositions.Contains(wallXPosition)){
+            enemyPositions.Add(wallXPosition);
+        }
+        if (!enemyPositions.Contains(wallYPosition)){
+            enemyPositions.Add(wallYPosition);
+        }
+
+        instanceX.transform.SetParent(enemyHolder);
+        instanceY.transform.SetParent(enemyHolder);
+        enemyCopyTiles = tileArray;
+        
+
+    }
 
     public void SetupScene(int level)
     {
         BoardSetup();
 
+     
+
         InitialiseList();
         LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum, "stars");
+
+        LayoutObjectsAlongTheWalls(enemyTiles);
+
+
         int enemyNumber = 1;
         if(level == 1)
         {
@@ -213,7 +289,6 @@ public class BoardManager : MonoBehaviour
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
 
         HideElements(false);
-
 
         Instantiate(door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
 
