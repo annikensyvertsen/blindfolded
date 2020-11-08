@@ -18,7 +18,7 @@ public class BoardManager : MonoBehaviour
             maximum = max;
         }
     }
-    public static int columns = 8;
+    public static int columns = 5;
     public static int rows = 8;
 
     public Count starCount = new Count(1, 2);
@@ -28,7 +28,6 @@ public class BoardManager : MonoBehaviour
     public GameObject[] floorTiles;
     public static GameObject[] hideFloorTiles;
 
-    public GameObject[] wallTiles;
     public GameObject[] starTiles;
     public GameObject[] enemyTiles;
 
@@ -158,11 +157,30 @@ public class BoardManager : MonoBehaviour
     }
 
 
+
     Vector3 RandomPosition()
     {
         int randomIndex = Random.Range(0, gridPositions.Count);
-       
+
+        bool isStartOrEndTile = false;
         Vector3 randomPosition = gridPositions[randomIndex];
+        if((randomPosition[0] == 0 && randomPosition[1] == 0)|| (randomPosition[0] == columns && randomPosition[1] == rows))
+        {
+            isStartOrEndTile = true;
+        }
+        while(isStartOrEndTile == true)
+        {
+            randomPosition = gridPositions[randomIndex];
+            if ((randomPosition[0] == 0 && randomPosition[1] == 0) || (randomPosition[0] == columns && randomPosition[1] == rows))
+            {
+                isStartOrEndTile = true;
+                randomPosition = gridPositions[randomIndex];
+            }
+            else
+            {
+                isStartOrEndTile = false;
+            }
+        }
         gridPositions.RemoveAt(randomIndex);
         return randomPosition;
     }
@@ -265,10 +283,14 @@ public class BoardManager : MonoBehaviour
         BoardSetup();
 
         InitialiseList();
-        LayoutObjectAtRandom (starTiles, starCount.minimum, starCount.maximum, "stars");
+        if(GameManager.instance.remainingLevelViews < 3)
+        {
+            LayoutObjectAtRandom(starTiles, 1, 1, "stars");
 
+        }
         LayoutObjectsAlongTheWalls(enemyTiles);
 
+        HideElements(true);
 
         int enemyNumber = 1;
         if(level == 1)
@@ -282,7 +304,7 @@ public class BoardManager : MonoBehaviour
         int enemyCount = enemyNumber * 2;
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
 
-        HideElements(false);
+        //HideElements(false);
 
         Instantiate(door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
 

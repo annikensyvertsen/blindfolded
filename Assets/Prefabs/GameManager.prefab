@@ -49,9 +49,12 @@ MonoBehaviour:
   playerSteps: 0
   playerLives: 3
   remainingLevelViews: 3
-  seeWorld: 0
   playersTurn: 1
   viewLevelText: {fileID: 0}
+  viewSeeWorldButton: {fileID: 0}
+  timeRemaining: 3
+  timerIsRunning: 0
+  seeWorld: 0
 --- !u!114 &7464251954796501848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,12 +72,8 @@ MonoBehaviour:
     maximum: 5
   door: {fileID: 1309374788291126625, guid: 0bec6b2d39704f14a8b4cad7d899ba30, type: 3}
   floorTiles:
-  - {fileID: 2347262100232561466, guid: 32db46c3c97799a4c93e157ee274dfa0, type: 3}
-  hideFloorTiles:
-  - {fileID: 2347262100232561466, guid: 32db46c3c97799a4c93e157ee274dfa0, type: 3}
-  wallTiles:
-  - {fileID: 8195764945466764389, guid: 79f4008a683fbd540b065b91ba687a08, type: 3}
+  - {fileID: 6704407599695646701, guid: 35f06c8fac882c14a8de4ece53ed80c9, type: 3}
   starTiles:
   - {fileID: 2853618792923803394, guid: 860120625d0e46640b7a6e169d7de7d1, type: 3}
   enemyTiles:
-  - {fileID: 6943582503353536752, guid: f3ceb08e9036bbb4bb945dcd49393e23, type: 3}
+  - {fileID: 7395598887408272202, guid: eb3e4fa492604ef40acf3ccb11ee8938, type: 3}

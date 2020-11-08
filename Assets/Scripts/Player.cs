@@ -11,15 +11,7 @@ public class Player : MovingObject
 
     private Animator animator;
 
-
-    private int stars;
     private int lives; 
-    private int steps;
-
-
-    public Text stepText;
-
-    public Text starText;
 
     public Text lifeText;
 
@@ -31,14 +23,10 @@ public class Player : MovingObject
        
         animator = GetComponent<Animator>();
 
-        stars = GameManager.instance.playerStarPoints;
         lives = GameManager.instance.playerLives;
-        steps = GameManager.instance.playerSteps;
 
         seeWorld = GameManager.instance.seeWorld; 
 
-        starText.text = "Stars: " + stars;
-        stepText.text = "Steps: " + steps;
         lifeText.text = "Lives: " + lives;
 
 
@@ -47,7 +35,6 @@ public class Player : MovingObject
 
     private void OnDisable()
     {
-        GameManager.instance.playerStarPoints = stars;
         GameManager.instance.playerLives = lives;
     }
     // Update is called once per frame
@@ -106,10 +93,7 @@ public class Player : MovingObject
  
         if (BoardManager.move == true)
         {
-            steps++;
             CheckIfSomethingIsHit(xDir, yDir);
-
-            stepText.text = "Steps: " + steps;
 
             base.AttemptMove(xDir, yDir);
             CheckIfGameOver();
@@ -151,6 +135,7 @@ public class Player : MovingObject
 
     }
 
+
 private void OnTriggerEnter2D (Collider2D other)
     {
         if(other.tag == "Door")
@@ -160,9 +145,13 @@ private void OnTriggerEnter2D (Collider2D other)
         }
         else if( other.tag == "Star")
         {
-
-            stars += 1;
-            starText.text = "Stars: " + stars;
+            //you should only get more possibilites to see the world if you have less than three
+            if(GameManager.instance.remainingLevelViews < 3)
+            {
+                GameManager.instance.remainingLevelViews += 1;
+                GameManager.instance.viewLevelText.text = GameManager.instance.remainingLevelViews + "/3";
+            }
+            
             //Disable the star object the player collided with.
 
             other.gameObject.SetActive (false); 
@@ -179,19 +168,7 @@ private void OnTriggerEnter2D (Collider2D other)
     {
         SceneManager.LoadScene(0);
     }
-    public void CollectStars()
-    {
-        stars += 1;
-        starText.text = "+ " + 1 + "Stars: " + stars;
-    }
 
-    public void LoseStars(int loss)
-    {
-        stars -= loss;
-        starText.text = "- " + loss + "Stars: " + stars;
-
-        CheckIfGameOver();
-    }
 
     private void CheckIfGameOver()
     {
