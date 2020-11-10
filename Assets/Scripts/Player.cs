@@ -174,5 +174,6 @@ private void OnTriggerEnter2D (Collider2D other)
     {
         if (lives <= 0)
             GameManager.instance.GameOver();
+        
     }
 }

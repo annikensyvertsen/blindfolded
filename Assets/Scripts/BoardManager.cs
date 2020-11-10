@@ -18,7 +18,7 @@ public class BoardManager : MonoBehaviour
             maximum = max;
         }
     }
-    public static int columns = 5;
+    public static int columns = 6;
     public static int rows = 8;
 
     public Count starCount = new Count(1, 2);
@@ -485,8 +485,17 @@ public class BoardManager : MonoBehaviour
 
     }
 
+    void CheckIfGameIsWon()
+    {
+          if (GameManager.instance.level == 3)
+        {
+            GameManager.instance.CompletedGame();
+        }
+    }
+
     public void SetupScene(int level)
     {
+        CheckIfGameIsWon();
         //empty all lists at start of each level
         neighbourTiles = new List<Vector3>(); 
         visitedTiles = new List<Vector3>();
@@ -514,13 +523,13 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            if(level < 5)
+            if(level < 13)
             {
                 enemyNumber = level;
             }
             else
             {
-                enemyNumber = 4;
+                enemyNumber = 12;
             }
         }
         int enemyCount = enemyNumber * 2;

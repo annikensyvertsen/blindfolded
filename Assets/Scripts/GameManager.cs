@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool playersTurn = true;
 
 
-    private int level = 1;                                    //Current level number, expressed in game as "Level 1".
+    public int level = 1;                                    //Current level number, expressed in game as "Level 1".
     private Text levelText;
 
     private int remainingViews;
@@ -128,7 +128,16 @@ public class GameManager : MonoBehaviour
             levelText.text = "After " + level + " level, you died.";
         else
             levelText.text = "After " + level + " levels, you died.";
+
         levelImage.SetActive(true);
         enabled = false; 
+    }
+    public void CompletedGame()
+    {
+        levelText.text = "You won! Welcome to Edens Hage.";
+        levelImage.SetActive(true);
+        enabled = false; 
+
+
     }
 }
