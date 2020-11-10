@@ -43,20 +43,45 @@ public class BoardManager : MonoBehaviour
     private bool visibility; 
 
     private List<Vector3> gridPositions = new List<Vector3> (); // a list of possible locations to place tiles
+    private List<Vector3> gridPositionsCopy = new List<Vector3>(); // a list of possible locations to place tiles
+
 
 
     void InitialiseList() //clears our list gridpositions and prepares it to generate new board
     {
         gridPositions.Clear();
-        for (int x = 1; x < columns; x++) //loop throug x-axis/columns
+        for (int x = 0; x < columns; x++) //loop throug x-axis/columns
         {
-            for (int y = 1; y < rows; y++) // whithin each loop, loop through y axis (rows)
+            for (int y = 0; y < rows; y++) // whithin each loop, loop through y axis (rows)
             {
                 gridPositions.Add(new Vector3(x, y, 0f)); // at each index, add a new vector3 to our list with the x and y coordinates of that position
             }
         }
         //fill list with tiles that are along the walls
-       
+        gridPositionsCopy.Clear();
+
+        for (int x = 0; x < columns; x++) //loop throug x-axis/columns
+        {
+            for (int y = 0; y < rows; y++) // whithin each loop, loop through y axis (rows)
+            {
+                gridPositionsCopy.Add(new Vector3(x, y, 0f)); // at each index, add a new vector3 to our list with the x and y coordinates of that position
+
+                //adds positions along the wall
+                //if not start or end posititon
+                if (!(x == 0 && y == 0) && !(x == columns - 1 && y == rows - 1))
+                {
+                 
+                    if (x == 0 || x == columns - 1)
+                    {
+                        gridYPositions.Add(new Vector3(x, y, 0f));
+                    }
+                    if (y == 0 || y == rows - 1)
+                    {
+                        gridXPositions.Add(new Vector3(x, y, 0f));
+                    }
+                }
+            }
+        }
     }
 
     void BoardSetup() //sets up floor of the game board
@@ -66,34 +91,17 @@ public class BoardManager : MonoBehaviour
         enemyHolder = new GameObject("Enemy").transform;
 
 
-        for (int x = 0; x < columns; x+=1) // loop along x axis, starting from 0 (to fill corner) with floor or outerwall edge tiles
+        for (int x = 0; x < columns; x++) // loop along x axis, starting from 0 (to fill corner) with floor or outerwall edge tiles
         {
-            for (int y = 0; y < rows; y+=1) //loop along y-axis, starting from 0 to place floor tile prefabs and prepare to instansiate it
+            for (int y = 0; y < rows; y++) //loop along y-axis, starting from 0 to place floor tile prefabs and prepare to instansiate it
             {
                 GameObject toInstantiate = floorTiles[0];
 
                 GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
                 //corresponing to current grid position in loop, cast it to GameObject
                 instance.transform.SetParent(boardHolder);
-
-                //adds positions along the wall
-                if(!(x == 0 && y == 0) && !(x == rows && y == columns))
-                {
-                    if (x == 0 || x == rows)
-                    {
-                        gridXPositions.Add(new Vector3(x, y, 0f));
-                    }
-                    if (y == 0 || y == columns)
-                    {
-                        gridYPositions.Add(new Vector3(x, y, 0f));
-                    }
-                }
-                
-
             }
         }
-      
-
     }
 
 
@@ -163,20 +171,32 @@ public class BoardManager : MonoBehaviour
         int randomIndex = Random.Range(0, gridPositions.Count);
 
         bool isStartOrEndTile = false;
+
         Vector3 randomPosition = gridPositions[randomIndex];
-        if((randomPosition[0] == 0 && randomPosition[1] == 0)|| (randomPosition[0] == columns && randomPosition[1] == rows))
+
+        if((randomPosition[0] == 0 && randomPosition[1] == 0)|| ((randomPosition[0] == (columns-1)) && (randomPosition[1] == (rows-1))))
         {
             isStartOrEndTile = true;
         }
+
+        int count = 0;
+
         while(isStartOrEndTile == true)
         {
             randomPosition = gridPositions[randomIndex];
-            if ((randomPosition[0] == 0 && randomPosition[1] == 0) || (randomPosition[0] == columns && randomPosition[1] == rows))
+
+            if ((randomPosition[0] == 0 && randomPosition[1] == 0) || ((randomPosition[0] == (columns-1)) && (randomPosition[1] == (rows-1))))
             {
                 isStartOrEndTile = true;
+                randomIndex = Random.Range(0, gridPositions.Count);
                 randomPosition = gridPositions[randomIndex];
             }
             else
+            {
+                isStartOrEndTile = false;
+            }
+            count++;
+            if(count == 100)
             {
                 isStartOrEndTile = false;
             }
@@ -214,21 +234,47 @@ public class BoardManager : MonoBehaviour
     public static List<Vector3> enemyPositions = new List<Vector3>();
     public static List<Vector3> starPositions = new List<Vector3>();
 
- 
+
 
     void LayoutObjectAtRandom(GameObject[] tileArray, int minimum, int maximum, string type) //LayoutObjectAtRandom accepts an array of game objects to choose from along with a minimum and maximum range for the number of objects to create.
     {
         //TODO - her må jeg gjøre en sjekk, sånn at verken stjerner eller miner blir plassert der man starter 
-        int objectCount = Random.Range(minimum, maximum + 1);  
-        
+        int objectCount = Random.Range(minimum, maximum + 1);
+
 
         for (int i = 0; i < objectCount; i++)
         {
             Vector3 randomPosition = RandomPosition();
             GameObject tileChoice = tileArray[Random.Range(0, tileArray.Length)];
 
+            int count = 0;
+
+            bool isInFreePath = false;
+            if (type == "enemies")
+            {
+                //here we will try to make sure no enemies are placed in the free path
+                if (path.Contains(randomPosition))
+                {
+                    isInFreePath = true;
+                }
+                while (isInFreePath == true)
+                {
+                    randomPosition = RandomPosition();
+                    if (!(path.Contains(randomPosition)))
+                    {
+                        isInFreePath = false;
+                    }
+                    count++;
+                    if (count == 100)
+                    {
+                        isInFreePath = false;
+                    }
+
+                }
+            }
+
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
-            
+
             //checks if the type is enemies or stars, and adds it to the belonging position list
             if (type == "enemies")
             {
@@ -248,8 +294,6 @@ public class BoardManager : MonoBehaviour
                 instance.transform.SetParent(starHolder);
 
             }
-
-            
         }
     }
 
@@ -259,7 +303,49 @@ public class BoardManager : MonoBehaviour
         GameObject enemyTile = tileArray[Random.Range(0, tileArray.Length)];
 
         Vector3 wallXPosition = RandomWallPosition("x");
+
+        bool xIsInFreePath = false;
+        if (path.Contains(wallXPosition))
+        {
+            xIsInFreePath = true;
+        }
+        int xcount = 0;
+        while (xIsInFreePath == true)
+        {
+            wallXPosition = RandomWallPosition("x");
+            if (!(path.Contains(wallXPosition)))
+            {
+                xIsInFreePath = false;
+            }
+            xcount++;
+            if(xcount == 100)
+            {
+                xIsInFreePath = false;
+            }
+        }
+
         Vector3 wallYPosition = RandomWallPosition("y");
+
+        bool yIsInFreePath = false;
+        int ycount = 0;
+        if (path.Contains(wallYPosition))
+        {
+            yIsInFreePath = true;
+        }
+        while (yIsInFreePath == true)
+        {
+            wallYPosition = RandomWallPosition("y");
+            if (!(path.Contains(wallYPosition)))
+            {
+                yIsInFreePath = false;
+            }
+            ycount++;
+            if (ycount == 100)
+            {
+                yIsInFreePath = false;
+            }
+        }
+
 
         GameObject instanceX = Instantiate(enemyTile, wallXPosition, Quaternion.identity) as GameObject;
         GameObject instanceY = Instantiate(enemyTile, wallYPosition, Quaternion.identity) as GameObject;
@@ -275,15 +361,144 @@ public class BoardManager : MonoBehaviour
         instanceY.transform.SetParent(enemyHolder);
         enemyCopyTiles = tileArray;
         
+    }
+
+
+    private List<Vector3> neighbourTiles = new List<Vector3>(); // 
+    private List<Vector3> visitedTiles = new List<Vector3>(); // 
+    private Vector3 currentNode = new Vector3(0, 0, 0);
+
+
+    Vector3 returnRandomNeigbour(float currentX, float currentY)
+    {
+
+        //iterate through and add neighbournodes to the current node
+        
+        gridPositionsCopy.ForEach(pos =>
+        {
+            float neighbourX = pos[0];
+            float neighbourY = pos[1];
+
+            //if there is a neighbor on the x axis
+            if (neighbourX == currentX)
+            {
+                //if there is a neighbour
+                if (currentY + 1.0 == neighbourY)
+                {
+
+                    if (!neighbourTiles.Contains(pos) && !visitedTiles.Contains(pos))
+                    {
+                        neighbourTiles.Add(pos);
+                    }
+                }
+            }
+            //if there is a neighbor on the y axis
+            if (neighbourY == currentY)
+            {
+
+                if (currentX + 1 == neighbourX || (currentX -1 == neighbourX && currentX == (columns-1)))
+                {
+
+                    if (!neighbourTiles.Contains(pos) && !visitedTiles.Contains(pos))
+                    {
+
+                        neighbourTiles.Add(pos);
+                    }
+                }
+            }
+        });
+
+
+        //get a random index from the neigbours
+        int lengthOfNeighbourTiles = neighbourTiles.Count;
+
+        int randomNeighboorIndex = Random.Range(0, lengthOfNeighbourTiles);
+
+        //choose a node of the neighbournodes with the random index and return it
+        if(neighbourTiles.Count != 0)
+        {
+            return neighbourTiles[randomNeighboorIndex];
+        }
+        else
+        {
+            return currentNode;
+        }
+    }
+    public List<Vector3> path = new List<Vector3>(); // 
+
+    //since the boards are randomly generated for each level, we need to make sure there is always a free path with no enemies from start to end
+    void CreateRandomPathToGoal()
+    {
+        //TODO : fikse denne indekseringen
+        Vector3 start = new Vector3(0, 0, 0);
+        Vector3 end = new Vector3(columns-1, rows-1, 0);
+
+        visitedTiles.Add(currentNode);
+        bool reachedGoal = false;
+        int count = 0;
+        path.Add(currentNode);
+      
+        while (reachedGoal == false)
+        {
+            float currentX = currentNode[0];
+            float currentY = currentNode[1];
+
+
+
+            //returns a Vector3 with a random neighbour of the assigned node
+            Vector3 randomNeighbour = returnRandomNeigbour(currentX, currentY);
+
+            //check that we have not already been at that tile
+            if (visitedTiles.Contains(randomNeighbour))
+            {
+                randomNeighbour = returnRandomNeigbour(currentX, currentY);
+            }
+            //assign current node to the random value
+            currentNode = randomNeighbour;
+            gridPositionsCopy.Remove(currentNode);
+
+
+            //add it to a list so that the same wont be choosen so we dont get a loop
+            visitedTiles.Add(currentNode);
+
+            path.Add(currentNode);
+            count++;
+            //check if we have reached goal
+
+            if (currentNode == end)
+            {
+                reachedGoal = true;
+            }
+            neighbourTiles = new List<Vector3>();
+
+            if (count == 100)
+            {
+   
+                reachedGoal = true;
+            }
+           
+            //pick a random neighboor in the nodes neighboor list
+            //int randomNeighboor = Random.Range(0, neighbourTiles.Count);
+
+        }
+
 
     }
 
     public void SetupScene(int level)
     {
-        BoardSetup();
+        //empty all lists at start of each level
+        neighbourTiles = new List<Vector3>(); 
+        visitedTiles = new List<Vector3>();
+        path = new List<Vector3>();
+        currentNode = new Vector3(0, 0, 0);
 
+        BoardSetup();
         InitialiseList();
-        if(GameManager.instance.remainingLevelViews < 3)
+
+        CreateRandomPathToGoal();
+
+        if (GameManager.instance.remainingLevelViews < 3)
         {
             LayoutObjectAtRandom(starTiles, 1, 1, "stars");
 
@@ -299,12 +514,17 @@ public class BoardManager : MonoBehaviour
         }
         else
         {
-            enemyNumber = level;
+            if(level < 5)
+            {
+                enemyNumber = level;
+            }
+            else
+            {
+                enemyNumber = 4;
+            }
         }
         int enemyCount = enemyNumber * 2;
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
-
-        //HideElements(false);
 
         Instantiate(door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);
 
