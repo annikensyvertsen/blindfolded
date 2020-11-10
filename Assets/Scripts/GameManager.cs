@@ -3,6 +3,8 @@ using System.Collections;
 
 using System.Collections.Generic;        //Allows us to use Lists. 
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -19,7 +21,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public bool playersTurn = true;
 
 
-    public int level = 1;                                    //Current level number, expressed in game as "Level 1".
+    private int level = 0;                                    //Current level number, expressed in game as "Level 1".
+    public int levels = 0;
+
     private Text levelText;
 
     private int remainingViews;
@@ -36,10 +40,13 @@ public class GameManager : MonoBehaviour
     public bool timerIsRunning = false;
     public bool seeWorld = false;
 
+    //public bool initGame = false;
 
     //Awake is always called before any Start functions
     void Awake()
     {
+        Debug.Log("level???????" + level);
+
         //Check if instance already exists
         if (instance == null)
 
@@ -59,27 +66,47 @@ public class GameManager : MonoBehaviour
         boardScript = GetComponent<BoardManager>();
 
         //Call the InitGame function to initialize the first level 
-        InitGame();
+
+        //InitGame(); 
+
+
     }
 
-
+    int count = 0;
     private void OnLevelWasLoaded (int index)
     {
-        level++;
+        count++; 
+        Debug.Log("how many times is onlevelwasloaded called? " + count);
+        Debug.Log("on level was loaded: " + index + " level: " + level);
 
-        BoardManager.starPositions = new List<Vector3>();
-        BoardManager.enemyPositions = new List<Vector3>();
+        if (index == 0)
+        {
+            Debug.Log("level in on level was loaded: " + level);
+            level++;
+            levels = level;
+            Debug.Log("bambambam: " + level);
 
-        InitGame();
+
+            BoardManager.starPositions = new List<Vector3>();
+            BoardManager.enemyPositions = new List<Vector3>();
+
+            InitGame();
+        }
+
     }
+    public bool startGame = false;
+
     //Initializes the game for each level.
     void InitGame()
     {
+        Debug.Log("when do we init the game what is the level: " + level);
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
+
+        Debug.Log("level in here? " + level);
         levelText.text = "Level " + level;
 
         viewLevelText = GameObject.Find("ViewText").GetComponent<Text>();

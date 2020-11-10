@@ -20,7 +20,7 @@ public class Player : MovingObject
     // Start is called before the first frame update
     protected override void Start()
     {
-       
+        Debug.Log("player");
         animator = GetComponent<Animator>();
 
         lives = GameManager.instance.playerLives;
@@ -140,7 +140,9 @@ private void OnTriggerEnter2D (Collider2D other)
     {
         if(other.tag == "Door")
         {
-            Invoke("Restart", restartLevelDelay);
+           // Invoke("Restart", restartLevelDelay);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
             enabled = false;
         }
         else if( other.tag == "Star")
@@ -166,6 +168,7 @@ private void OnTriggerEnter2D (Collider2D other)
 
     private void Restart()
     {
+        Debug.Log("er det denne???");
         SceneManager.LoadScene(0);
     }
 

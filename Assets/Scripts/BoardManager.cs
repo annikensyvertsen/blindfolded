@@ -487,7 +487,7 @@ public class BoardManager : MonoBehaviour
 
     void CheckIfGameIsWon()
     {
-          if (GameManager.instance.level == 3)
+          if (GameManager.instance.levels == 14)
         {
             GameManager.instance.CompletedGame();
         }
