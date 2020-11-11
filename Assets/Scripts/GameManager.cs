@@ -20,9 +20,9 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public bool playersTurn = true;
 
+    public int levels = 0;
 
     private int level = 0;                                    //Current level number, expressed in game as "Level 1".
-    public int levels = 0;
 
     private Text levelText;
 

@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 714960469}
   - component: {fileID: 714960468}
   m_Layer: 5
-  m_Name: LifeText
+  m_Name: LevelProgressText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -468,7 +468,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Lives: 3'
+  m_Text: 'Level : 1'
 --- !u!222 &714960469
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1071,7 +1071,8 @@ MonoBehaviour:
   spawn: {x: 0, y: 0, z: 0}
   pointsPerStar: 1
   restartLevelDelay: 1
-  lifeText: {fileID: 714960468}
+  level: 1
+  LevelText: {fileID: 0}
 --- !u!50 &1625573510
 Rigidbody2D:
   serializedVersion: 4

@@ -11,23 +11,29 @@ public class Player : MovingObject
 
     private Animator animator;
 
-    private int lives; 
+    private int lives;
+    public int level = 1;
 
-    public Text lifeText;
+    private Text levelText;
 
     private bool seeWorld = false;
 
     // Start is called before the first frame update
+   
     protected override void Start()
     {
-        Debug.Log("player");
         animator = GetComponent<Animator>();
 
+
         lives = GameManager.instance.playerLives;
+        level = GameManager.instance.levels;
+        Debug.Log("level? " + level);
 
-        seeWorld = GameManager.instance.seeWorld; 
+        seeWorld = GameManager.instance.seeWorld;
 
-        lifeText.text = "Lives: " + lives;
+        levelText = GameObject.Find("LevelProgressText").GetComponent<Text>();
+
+        levelText.text = "Level: " + level ;
 
 
         base.Start();
@@ -161,7 +167,7 @@ private void OnTriggerEnter2D (Collider2D other)
         else if (other.tag == "Enemy")
         {
             lives--;
-            lifeText.text = "Lives: " + lives;
+            levelText.text = "Level: " + level;
         }
     }
 
