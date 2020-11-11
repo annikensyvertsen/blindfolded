@@ -70,13 +70,16 @@ public class GameManager : MonoBehaviour
 
     }
 
-    int count = 0;
     private void OnLevelWasLoaded (int index)
     {
-        count++; 
-  
+        Debug.Log("dette blir spennende: " + index);
+        if(index == 1)
+        {
+            level = 0;
+        }
         if (index == 0)
         {
+
             level++;
             levels = level;
            
@@ -94,6 +97,7 @@ public class GameManager : MonoBehaviour
     {
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
+        Debug.Log("initgame");
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
@@ -148,14 +152,38 @@ public class GameManager : MonoBehaviour
             levelText.text = "After " + level + " levels, you died.";
 
         levelImage.SetActive(true);
-        enabled = false; 
+        enabled = false;
+
+        StartCoroutine(waiter());
+       
+
     }
+
     public void CompletedGame()
     {
         levelText.text = "You won! Welcome to Edens Hage.";
         levelImage.SetActive(true);
-        enabled = false; 
+        enabled = false;
 
+        StartCoroutine(waiter());
 
     }
+
+
+    IEnumerator waiter()
+    {
+        yield return new WaitForSeconds(3);
+        SceneManager.LoadScene(1);
+        LevelChanger.buttonClicked = false;
+        if (instance == null)
+
+            //if not, set instance to this
+            instance = this;
+
+        //If instance already exists and it's not this:
+        else if (instance != this)
+            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
+            Destroy(gameObject);
+    }
+
 }

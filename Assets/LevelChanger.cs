@@ -13,6 +13,8 @@ public class LevelChanger : MonoBehaviour
     public GameObject gameManager;            //GameManager prefab to instantiate.
 
     public static bool buttonClicked = false;
+    public static bool loadStartPage = false;
+
 
     // Start is called before the first frame update
 
@@ -29,12 +31,14 @@ public class LevelChanger : MonoBehaviour
         if(buttonClicked == true)
         {
             FadeToLevel(0);
-            // GameManager.instance.initGame = true;
             if (GameManager.instance == null)
-
                 //Instantiate gameManager prefab
                 Instantiate(gameManager);
 
+        }
+        if(loadStartPage == true)
+        {
+            FadeToLevel(1);
         }
     
     }

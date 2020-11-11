@@ -95,13 +95,13 @@ public class Player : MovingObject
     {
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
- 
+        Debug.Log("trying to move");
         if (BoardManager.move == true)
         {
             CheckIfSomethingIsHit(xDir, yDir);
 
             base.AttemptMove(xDir, yDir);
-            CheckIfGameOver();
+            //CheckIfGameOver();
         }
         
 
@@ -165,9 +165,17 @@ private void OnTriggerEnter2D (Collider2D other)
         }
         else if (other.tag == "Enemy")
         {
+            GameManager.instance.playerLives--;
             lives--;
+            StartCoroutine(waiter());
+
             levelText.text = "Level: " + level;
         }
+    }
+    IEnumerator waiter()
+    {
+        yield return new WaitForSeconds(1);
+        CheckIfGameOver();
     }
 
 

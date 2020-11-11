@@ -91,7 +91,6 @@ public abstract class MovingObject : MonoBehaviour
         //re-enable boxCollider after linecast
         boxCollider.enabled = true;
         //check if you are at the edge of the board
-        
         //check if anything was hit
         if (hit.transform == null && canMove == true)
         {
@@ -103,6 +102,9 @@ public abstract class MovingObject : MonoBehaviour
         //if something was hit return false
         return false;
     }
+
+ 
+    
     IEnumerator waiter()
     {
         yield return new WaitForSeconds(1);
