@@ -79,6 +79,7 @@ public class GameManager : MonoBehaviour
         }
         if (index == 0)
         {
+            Debug.Log("wo ");
 
             level++;
             levels = level;
@@ -172,18 +173,11 @@ public class GameManager : MonoBehaviour
 
     IEnumerator waiter()
     {
+        //when player hits enemy and dies, the game waits three seconds and then passes back to main menu. Also makes sure to destroy the gameobject so it will create a fresh one.
         yield return new WaitForSeconds(3);
         SceneManager.LoadScene(1);
         LevelChanger.buttonClicked = false;
-        if (instance == null)
-
-            //if not, set instance to this
-            instance = this;
-
-        //If instance already exists and it's not this:
-        else if (instance != this)
-            //Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
-            Destroy(gameObject);
+        Destroy(gameObject);
     }
 
 }
