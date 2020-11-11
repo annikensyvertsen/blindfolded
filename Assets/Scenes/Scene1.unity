@@ -362,7 +362,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 599464851}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -339.82, y: -189.52, z: -1}
+  m_LocalPosition: {x: -340.7, y: -189.3, z: -1}
   m_LocalScale: {x: 1.4913067, y: 1.2216946, z: 1}
   m_Children: []
   m_Father: {fileID: 280100949}
@@ -1072,7 +1072,6 @@ MonoBehaviour:
   pointsPerStar: 1
   restartLevelDelay: 1
   level: 1
-  LevelText: {fileID: 0}
 --- !u!50 &1625573510
 Rigidbody2D:
   serializedVersion: 4

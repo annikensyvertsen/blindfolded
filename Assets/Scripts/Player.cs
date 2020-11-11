@@ -27,7 +27,6 @@ public class Player : MovingObject
 
         lives = GameManager.instance.playerLives;
         level = GameManager.instance.levels;
-        Debug.Log("level? " + level);
 
         seeWorld = GameManager.instance.seeWorld;
 
@@ -174,7 +173,6 @@ private void OnTriggerEnter2D (Collider2D other)
 
     private void Restart()
     {
-        Debug.Log("er det denne???");
         SceneManager.LoadScene(0);
     }
 

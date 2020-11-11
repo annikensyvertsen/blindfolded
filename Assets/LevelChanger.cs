@@ -41,7 +41,6 @@ public class LevelChanger : MonoBehaviour
 
     public void OnFadeComplete()
     {
-        Debug.Log("maybe this is the problem :0 " + levelToLoad);
         SceneManager.LoadScene(levelToLoad);
     }
 }

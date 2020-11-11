@@ -493,6 +493,17 @@ public class BoardManager : MonoBehaviour
         }
     }
 
+    //change background image according to level
+    void ChangeBackground()
+    {
+        if (GameManager.instance.levels == 2)
+        {
+            Sprite newSprite = Resources.Load<Sprite>("brett_bakgrunnsfarge2");
+            GameObject background = GameObject.Find("Background");
+            background.GetComponent<SpriteRenderer>().sprite = newSprite;
+        }
+    }
+
     public void SetupScene(int level)
     {
         CheckIfGameIsWon();
@@ -503,6 +514,9 @@ public class BoardManager : MonoBehaviour
         currentNode = new Vector3(0, 0, 0);
 
         BoardSetup();
+        ChangeBackground();
+
+
         InitialiseList();
 
         CreateRandomPathToGoal();
