@@ -72,15 +72,12 @@ public class GameManager : MonoBehaviour
 
     private void OnLevelWasLoaded (int index)
     {
-        Debug.Log("dette blir spennende: " + index);
         if(index == 1)
         {
             level = 0;
         }
         if (index == 0)
         {
-            Debug.Log("wo ");
-
             level++;
             levels = level;
            
@@ -98,7 +95,6 @@ public class GameManager : MonoBehaviour
     {
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
-        Debug.Log("initgame");
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();

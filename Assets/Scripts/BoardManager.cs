@@ -494,11 +494,11 @@ public class BoardManager : MonoBehaviour
     }
 
     //change background image according to level
-    void ChangeBackground()
+    void ChangeBackground(int level)
     {
-        if (GameManager.instance.levels == 2)
+        if (level > 1)
         {
-            Sprite newSprite = Resources.Load<Sprite>("brett_bakgrunnsfarge2");
+            Sprite newSprite = Resources.Load<Sprite>("background" + level.ToString());
             GameObject background = GameObject.Find("Background");
             background.GetComponent<SpriteRenderer>().sprite = newSprite;
         }
@@ -514,7 +514,7 @@ public class BoardManager : MonoBehaviour
         currentNode = new Vector3(0, 0, 0);
 
         BoardSetup();
-        ChangeBackground();
+        ChangeBackground(level);
 
 
         InitialiseList();

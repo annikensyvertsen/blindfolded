@@ -95,7 +95,6 @@ public class Player : MovingObject
     {
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
-        Debug.Log("trying to move");
         if (BoardManager.move == true)
         {
             CheckIfSomethingIsHit(xDir, yDir);
