@@ -516,6 +516,11 @@ public class BoardManager : MonoBehaviour
 
         HideElements(true);
 
+        gridPositions.ForEach(f =>
+        {
+            Debug.Log("f: " + f);
+        });
+
         int enemyNumber = 1;
         if(level == 1)
         {

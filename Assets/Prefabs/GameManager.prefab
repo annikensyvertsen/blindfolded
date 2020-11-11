@@ -45,16 +45,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelStartDelay: 2
-  playerStarPoints: 0
-  playerSteps: 0
-  playerLives: 3
+  playerLives: 1
   remainingLevelViews: 3
   playersTurn: 1
+  levels: 0
   viewLevelText: {fileID: 0}
   viewSeeWorldButton: {fileID: 0}
   timeRemaining: 3
   timerIsRunning: 0
   seeWorld: 0
+  startGame: 0
 --- !u!114 &7464251954796501848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,3 +77,4 @@ MonoBehaviour:
   - {fileID: 2853618792923803394, guid: 860120625d0e46640b7a6e169d7de7d1, type: 3}
   enemyTiles:
   - {fileID: 7395598887408272202, guid: eb3e4fa492604ef40acf3ccb11ee8938, type: 3}
+  path: []

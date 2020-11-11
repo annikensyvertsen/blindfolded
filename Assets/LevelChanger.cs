@@ -12,6 +12,7 @@ public class LevelChanger : MonoBehaviour
 
     public GameObject gameManager;            //GameManager prefab to instantiate.
 
+    public static bool buttonClicked = false;
 
     // Start is called before the first frame update
 
@@ -25,17 +26,17 @@ public class LevelChanger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if(buttonClicked == true)
         {
             FadeToLevel(0);
-            Debug.Log("lets go to the game");
-           // GameManager.instance.initGame = true;
+            // GameManager.instance.initGame = true;
             if (GameManager.instance == null)
 
                 //Instantiate gameManager prefab
                 Instantiate(gameManager);
 
         }
+    
     }
 
     public void OnFadeComplete()

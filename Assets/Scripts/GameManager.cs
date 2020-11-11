@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;                //Static instance of GameManager which allows it to be accessed by any other script.
     private BoardManager boardScript;                        //Store a reference to our BoardManager which will set up the level.
 
-    public int playerLives = 3;
+    public int playerLives = 1;
 
     public int remainingLevelViews = 3;
 
@@ -40,12 +40,10 @@ public class GameManager : MonoBehaviour
     public bool timerIsRunning = false;
     public bool seeWorld = false;
 
-    //public bool initGame = false;
 
     //Awake is always called before any Start functions
     void Awake()
     {
-        Debug.Log("level???????" + level);
 
         //Check if instance already exists
         if (instance == null)
@@ -76,17 +74,12 @@ public class GameManager : MonoBehaviour
     private void OnLevelWasLoaded (int index)
     {
         count++; 
-        Debug.Log("how many times is onlevelwasloaded called? " + count);
-        Debug.Log("on level was loaded: " + index + " level: " + level);
-
+  
         if (index == 0)
         {
-            Debug.Log("level in on level was loaded: " + level);
             level++;
             levels = level;
-            Debug.Log("bambambam: " + level);
-
-
+           
             BoardManager.starPositions = new List<Vector3>();
             BoardManager.enemyPositions = new List<Vector3>();
 
@@ -99,14 +92,12 @@ public class GameManager : MonoBehaviour
     //Initializes the game for each level.
     void InitGame()
     {
-        Debug.Log("when do we init the game what is the level: " + level);
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
 
-        Debug.Log("level in here? " + level);
         levelText.text = "Level " + level;
 
         viewLevelText = GameObject.Find("ViewText").GetComponent<Text>();
