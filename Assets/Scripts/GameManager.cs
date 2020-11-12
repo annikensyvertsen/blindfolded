@@ -26,7 +26,6 @@ public class GameManager : MonoBehaviour
 
     private Text levelText;
 
-    private int remainingViews;
     public Text viewLevelText;
 
     public GameObject viewSeeWorldButton;
@@ -105,11 +104,11 @@ public class GameManager : MonoBehaviour
 
         levelText.text = "Level " + level;
 
-        viewLevelText = GameObject.Find("ViewText").GetComponent<Text>();
-        viewLevelText.text = remainingLevelViews + "/3";
 
         viewSeeWorldButton = GameObject.Find("SeeWorldButton");
-        viewSeeWorldButton.SetActive(false);
+        viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
+        viewSeeWorldButton.GetComponent<Button>().enabled = false;
+
 
         levelImage.SetActive(true);
         Invoke("HideLevelImage", levelStartDelay);
@@ -120,9 +119,18 @@ public class GameManager : MonoBehaviour
     public void HideLevelImage()
     {
         levelImage.SetActive(false);
-        viewSeeWorldButton.SetActive(true);
+        viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(true);
+        viewSeeWorldButton.GetComponent<Button>().enabled = true;
+        viewSeeWorldButton.GetComponent<Button>().interactable = true;
+
 
         doingSetup = false;
+    }
+    public void DisableButton()
+    {
+        viewSeeWorldButton.GetComponent<Button>().enabled = false;
+        viewSeeWorldButton.GetComponent<Button>().interactable = false;
+
     }
     void Update()
     {
@@ -144,6 +152,15 @@ public class GameManager : MonoBehaviour
         if (playersTurn  || doingSetup)
             //If any of these are true, return and do not start MoveEnemies.
             return;
+        if(remainingLevelViews <= 0)
+        {
+            DisableButton();
+        }
+        else
+        {
+            viewSeeWorldButton.GetComponent<Button>().enabled = true;
+            viewSeeWorldButton.GetComponent<Button>().interactable = true;
+        }
     }
     public void GameOver()
     {

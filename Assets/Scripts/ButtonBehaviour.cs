@@ -7,14 +7,13 @@ using UnityEngine.UI;
 public class ButtonBehaviour : MonoBehaviour
 {
     // Start is called before the first frame update
-
+    public AudioClip seeWorldSound;
     public void TaskOnClick()
     {
         if (GameManager.instance.remainingLevelViews > 0)
         {
+            SoundManager.instance.PlaySingle(seeWorldSound);
             GameManager.instance.remainingLevelViews--;
-            int count = GameManager.instance.remainingLevelViews;
-            GameManager.instance.viewLevelText.text = count + "/3";
             GameManager.instance.seeWorld = !GameManager.instance.seeWorld;
             BoardManager.HideElements(GameManager.instance.seeWorld);
             BoardManager.move = false;

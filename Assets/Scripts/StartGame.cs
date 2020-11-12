@@ -11,6 +11,8 @@ public class StartGame : MonoBehaviour
     {
       
         LevelChanger.buttonClicked = true;
+        SoundManager.instance.music1Source.Stop();
+        SoundManager.instance.music2Source.Play();
 
     }
 

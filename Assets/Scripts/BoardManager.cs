@@ -23,6 +23,7 @@ public class BoardManager : MonoBehaviour
 
     public Count starCount = new Count(1, 2);
 
+    public GameObject entrance; 
     public GameObject door;
 
     public GameObject[] floorTiles;
@@ -95,11 +96,25 @@ public class BoardManager : MonoBehaviour
         {
             for (int y = 0; y < rows; y++) //loop along y-axis, starting from 0 to place floor tile prefabs and prepare to instansiate it
             {
-                GameObject toInstantiate = floorTiles[0];
+                if(!(x==0 && y==0) && !(x==columns &&  y == rows))
+                {
+                    GameObject toInstantiate = floorTiles[0];
+                    GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
+                    //corresponing to current grid position in loop, cast it to GameObject
+                    instance.transform.SetParent(boardHolder);
+                }
+                else
+                {
+                    Debug.Log("else");
+                    GameObject i = Instantiate(entrance, new Vector3(x, y, 0F), Quaternion.identity) as GameObject;
+                    i.transform.SetParent(boardHolder);
 
-                GameObject instance = Instantiate (toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
-                //corresponing to current grid position in loop, cast it to GameObject
-                instance.transform.SetParent(boardHolder);
+
+                    /*GameObject toInstantiate = entrance;
+                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
+                    instance.transform.SetParent(boardHolder);*/
+                }
+
             }
         }
     }

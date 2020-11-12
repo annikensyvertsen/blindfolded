@@ -19,7 +19,13 @@ public class Player : MovingObject
     private bool seeWorld = false;
 
     // Start is called before the first frame update
-   
+    public AudioClip moveSound;
+    public AudioClip catchRatSound;
+    public AudioClip walkOnEnemySound;
+    public AudioClip gameOverSound;
+
+
+
     protected override void Start()
     {
         animator = GetComponent<Animator>();
@@ -93,6 +99,7 @@ public class Player : MovingObject
 
     protected override void AttemptMove (int xDir, int yDir)
     {
+        SoundManager.instance.PlaySingle(moveSound);
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
         if (BoardManager.move == true)
@@ -122,6 +129,7 @@ public class Player : MovingObject
             {
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
+                SoundManager.instance.PlaySingle(catchRatSound);
             }
         });
         enemyPositions.ForEach(position =>
@@ -130,6 +138,8 @@ public class Player : MovingObject
             {
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
+                SoundManager.instance.PlaySingle(walkOnEnemySound);
+
             }
         });
         toBeRemoved.ForEach(elementToRemove =>
@@ -155,7 +165,6 @@ private void OnTriggerEnter2D (Collider2D other)
             if(GameManager.instance.remainingLevelViews < 3)
             {
                 GameManager.instance.remainingLevelViews += 1;
-                GameManager.instance.viewLevelText.text = GameManager.instance.remainingLevelViews + "/3";
             }
             
             //Disable the star object the player collided with.
@@ -189,7 +198,10 @@ private void OnTriggerEnter2D (Collider2D other)
     private void CheckIfGameOver()
     {
         if (lives <= 0)
+        {
             GameManager.instance.GameOver();
-        
+            SoundManager.instance.music2Source.Stop();
+        }
+          
     }
 }

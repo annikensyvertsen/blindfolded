@@ -70,6 +70,8 @@ MonoBehaviour:
   starCount:
     minimum: 1
     maximum: 5
+  entrance: {fileID: 1065497959413558420, guid: c6318888ecfacb04bb98c43ffb734a70,
+    type: 3}
   door: {fileID: 1309374788291126625, guid: 0bec6b2d39704f14a8b4cad7d899ba30, type: 3}
   floorTiles:
   - {fileID: 6704407599695646701, guid: 35f06c8fac882c14a8de4ece53ed80c9, type: 3}
