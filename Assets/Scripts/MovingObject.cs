@@ -19,7 +19,7 @@ public abstract class MovingObject : MonoBehaviour
     protected virtual void Start()
     {
         //set the start position of the player
-        spawn = new Vector3(0, 0, 0);
+        spawn = new Vector3(0, 0.3f, 0);
         transform.position = spawn;
 
         //get component references to BoxCollider2D and Rigidbody2D
@@ -72,7 +72,7 @@ public abstract class MovingObject : MonoBehaviour
             StartCoroutine(waiter());
         }
         else
-        {
+        { 
             canMove = true;
             previousStartPosition = start;
         }
@@ -92,6 +92,10 @@ public abstract class MovingObject : MonoBehaviour
         boxCollider.enabled = true;
         //check if you are at the edge of the board
         //check if anything was hit
+        //Debug.Log("end: " + end);
+        end[1] = ((float)(end[1]) + 0.3f);
+        //Debug.Log("end after casting: " + end);
+
         if (hit.transform == null && canMove == true)
         {
             StartCoroutine(SmoothMovement (end));
@@ -120,7 +124,6 @@ public abstract class MovingObject : MonoBehaviour
 
         while (sqrRemainingDistance > float.Epsilon)
         {
-
             Vector3 newPosition = Vector3.MoveTowards(rb2D.position, end, inverseMoveTime * Time.deltaTime);
 
             rb2D.MovePosition (newPosition);

@@ -30,7 +30,9 @@ public class PauseMenu : MonoBehaviour
     public void QuitGame()
     {
         DeactivateMenu();
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
+
         LevelChanger.buttonClicked = false;
     }
 

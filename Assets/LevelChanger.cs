@@ -30,7 +30,9 @@ public class LevelChanger : MonoBehaviour
     {
         if(buttonClicked == true)
         {
-            FadeToLevel(0);
+            //FadeToLevel(0);
+
+            FadeToLevel(1);
             if (GameManager.instance == null)
                 //Instantiate gameManager prefab
                 Instantiate(gameManager);
@@ -38,7 +40,9 @@ public class LevelChanger : MonoBehaviour
         }
         if(loadStartPage == true)
         {
-            FadeToLevel(1);
+            //FadeToLevel(1);
+
+            FadeToLevel(0);
         }
     
     }

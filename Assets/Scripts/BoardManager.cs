@@ -272,6 +272,10 @@ public class BoardManager : MonoBehaviour
 
                 }
             }
+            //Debug.Log("random position: " + randomPosition);
+            //randomPosition[1] = ((float)(randomPosition[1]) + 0.3f);
+            //Debug.Log("random position after casting: " + randomPosition);
+
 
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
 

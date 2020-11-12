@@ -72,11 +72,15 @@ public class GameManager : MonoBehaviour
 
     private void OnLevelWasLoaded (int index)
     {
-        if(index == 1)
+        // if(index == 1)
+
+        if (index == 0)
         {
             level = 0;
         }
-        if (index == 0)
+        // if(index == 0)
+
+        if (index == 1)
         {
             level++;
             levels = level;
@@ -171,7 +175,9 @@ public class GameManager : MonoBehaviour
     {
         //when player hits enemy and dies, the game waits three seconds and then passes back to main menu. Also makes sure to destroy the gameobject so it will create a fresh one.
         yield return new WaitForSeconds(3);
-        SceneManager.LoadScene(1);
+        //SceneManager.LoadScene(1);
+        SceneManager.LoadScene(0);
+
         LevelChanger.buttonClicked = false;
         Destroy(gameObject);
     }

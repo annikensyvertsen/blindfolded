@@ -118,7 +118,7 @@ public class Player : MovingObject
 
         starPositions.ForEach(position =>
         {
-            if(position[0] == now[0] && position[1] == now[1])
+            if ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1]))
             {
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
@@ -126,7 +126,7 @@ public class Player : MovingObject
         });
         enemyPositions.ForEach(position =>
         {
-            if (position[0] == now[0] && position[1] == now[1])
+            if ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1]))
             {
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
@@ -180,7 +180,9 @@ private void OnTriggerEnter2D (Collider2D other)
 
     private void Restart()
     {
-        SceneManager.LoadScene(0);
+        //SceneManager.LoadScene(0);
+
+        SceneManager.LoadScene(1);
     }
 
 
