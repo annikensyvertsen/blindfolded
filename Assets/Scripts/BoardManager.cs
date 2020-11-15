@@ -18,7 +18,7 @@ public class BoardManager : MonoBehaviour
             maximum = max;
         }
     }
-    public static int columns = 6;
+    public static int columns = 8;
     public static int rows = 8;
 
     public Count starCount = new Count(1, 2);
@@ -105,14 +105,9 @@ public class BoardManager : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("else");
                     GameObject i = Instantiate(entrance, new Vector3(x, y, 0F), Quaternion.identity) as GameObject;
                     i.transform.SetParent(boardHolder);
 
-
-                    /*GameObject toInstantiate = entrance;
-                    GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject; //instantiate the gameobject instance using the prefab chosen for toInstantiate at the vector 3
-                    instance.transform.SetParent(boardHolder);*/
                 }
 
             }
@@ -127,7 +122,6 @@ public class BoardManager : MonoBehaviour
         //should be called with true at the start
         if (seeWorld == true)
         {
-            move = false;
             //show elements
             starPositions.ForEach(tile =>
             {
@@ -143,6 +137,7 @@ public class BoardManager : MonoBehaviour
             });
             GameManager.instance.timeRemaining = timer;
             GameManager.instance.timerIsRunning = true;
+            GameManager.instance.DisableButton(); 
 
         }
         else
@@ -162,12 +157,36 @@ public class BoardManager : MonoBehaviour
                 }
 
             });
+
+            //sometimes when you move fast, not all enemies are logged, this double checks that all enemies are saved when the world is hidden
+            List<Vector3> childrenNotInEnemy = new List<Vector3>();
             enemyPositions.ForEach(tile =>
             {
-                float x = tile[0];
-                float y = tile[1];
                 foreach (Transform child in enemyHolder)
                 {
+                    if (!(enemyPositions.Contains(child.position)))
+                    {
+                        childrenNotInEnemy.Add(child.position);
+                    }
+                };
+            });
+            childrenNotInEnemy.ForEach(child =>
+            {
+                enemyPositions.Add(child);
+            });
+
+            enemyPositions.ForEach(tile =>
+            {
+                GameObject tileChoice = enemyCopyTiles[Random.Range(0, enemyCopyTiles.Length)];
+                GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                instance.transform.SetParent(enemyHolder);
+            });
+
+            enemyPositions.ForEach(tile =>
+            {
+                foreach (Transform child in enemyHolder)
+                {
+                   
                     if (child.position == tile)
                     {
                         Destroy(child.gameObject);
@@ -175,6 +194,11 @@ public class BoardManager : MonoBehaviour
                 }
             });
             GameManager.instance.timerIsRunning = false;
+
+        }
+        if (GameManager.instance.remainingLevelViews <= 0)
+        {
+            GameManager.instance.DisableButton();
 
         }
     }
@@ -287,10 +311,6 @@ public class BoardManager : MonoBehaviour
 
                 }
             }
-            //Debug.Log("random position: " + randomPosition);
-            //randomPosition[1] = ((float)(randomPosition[1]) + 0.3f);
-            //Debug.Log("random position after casting: " + randomPosition);
-
 
             GameObject instance = Instantiate(tileChoice, randomPosition, Quaternion.identity) as GameObject;
 
@@ -535,7 +555,6 @@ public class BoardManager : MonoBehaviour
         BoardSetup();
         ChangeBackground(level);
 
-
         InitialiseList();
 
         CreateRandomPathToGoal();
@@ -543,8 +562,13 @@ public class BoardManager : MonoBehaviour
         if (GameManager.instance.remainingLevelViews < 3)
         {
             LayoutObjectAtRandom(starTiles, 1, 1, "stars");
+        }
+        if (GameManager.instance.remainingLevelViews <= 0)
+        {
+            GameManager.instance.DisableButton();
 
         }
+
         LayoutObjectsAlongTheWalls(enemyTiles);
 
         HideElements(true);
@@ -566,7 +590,7 @@ public class BoardManager : MonoBehaviour
                 enemyNumber = 12;
             }
         }
-        int enemyCount = enemyNumber * 2;
+        int enemyCount = enemyNumber * 3;
         LayoutObjectAtRandom (enemyTiles, enemyCount, enemyCount, "enemies");
 
         Instantiate(door, new Vector3(columns - 1, rows - 1, 0F), Quaternion.identity);

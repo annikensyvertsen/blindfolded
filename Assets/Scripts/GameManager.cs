@@ -32,6 +32,8 @@ public class GameManager : MonoBehaviour
 
 
     private GameObject levelImage;
+    private GameObject godImage;
+    private GameObject wonImage;
     private bool doingSetup = true;
 
 
@@ -76,6 +78,8 @@ public class GameManager : MonoBehaviour
         if (index == 0)
         {
             level = 0;
+            SoundManager.instance.music1Source.Play();
+
         }
         // if(index == 0)
 
@@ -102,12 +106,17 @@ public class GameManager : MonoBehaviour
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
 
-        levelText.text = "Level " + level;
+        godImage = GameObject.Find("God");
+        godImage.SetActive(false);
 
+        wonImage = GameObject.Find("YouWon");
+        wonImage.SetActive(false);
+
+        levelText.text = "Level " + level;        
 
         viewSeeWorldButton = GameObject.Find("SeeWorldButton");
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
-        viewSeeWorldButton.GetComponent<Button>().enabled = false;
+
 
 
         levelImage.SetActive(true);
@@ -120,7 +129,6 @@ public class GameManager : MonoBehaviour
     {
         levelImage.SetActive(false);
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(true);
-        viewSeeWorldButton.GetComponent<Button>().enabled = true;
         viewSeeWorldButton.GetComponent<Button>().interactable = true;
 
 
@@ -128,9 +136,21 @@ public class GameManager : MonoBehaviour
     }
     public void DisableButton()
     {
-        viewSeeWorldButton.GetComponent<Button>().enabled = false;
-        viewSeeWorldButton.GetComponent<Button>().interactable = false;
+        if (GameManager.instance.remainingLevelViews <= 0)
+        {
+             viewSeeWorldButton.GetComponent<Button>().interactable = false;
+        }
 
+            
+
+        /*if (GameManager.instance.remainingLevelViews <= 0)
+        {
+            if(viewSeeWorldButton != null)
+                {
+                    viewSeeWorldButton.GetComponent<Button>().interactable = false;
+                }
+        }*/
+       
     }
     void Update()
     {
@@ -149,18 +169,11 @@ public class GameManager : MonoBehaviour
                 timerIsRunning = false;
             }
         }
+      
         if (playersTurn  || doingSetup)
             //If any of these are true, return and do not start MoveEnemies.
             return;
-        if(remainingLevelViews <= 0)
-        {
-            DisableButton();
-        }
-        else
-        {
-            viewSeeWorldButton.GetComponent<Button>().enabled = true;
-            viewSeeWorldButton.GetComponent<Button>().interactable = true;
-        }
+        
     }
     public void GameOver()
     {
@@ -168,19 +181,22 @@ public class GameManager : MonoBehaviour
             levelText.text = "After " + level + " level, you died.";
         else
             levelText.text = "After " + level + " levels, you died.";
+        godImage.SetActive(true);
 
-        levelImage.SetActive(true);
+        viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
+
+        //BoardManager.move = false;
         enabled = false;
+        BoardManager.move = false;
+        StartCoroutine(waitForLevel());
 
-        StartCoroutine(waiter());
-       
 
     }
 
     public void CompletedGame()
     {
-        levelText.text = "You won! Welcome to Edens Hage.";
-        levelImage.SetActive(true);
+
+        wonImage.SetActive(true);
         enabled = false;
 
         StartCoroutine(waiter());
@@ -188,11 +204,20 @@ public class GameManager : MonoBehaviour
     }
 
 
+    IEnumerator waitForLevel()
+    {
+        yield return new WaitForSeconds(3);
+        godImage.SetActive(false);
+        levelImage.SetActive(true);
+        StartCoroutine(waiter());
+
+
+    }
+
     IEnumerator waiter()
     {
         //when player hits enemy and dies, the game waits three seconds and then passes back to main menu. Also makes sure to destroy the gameobject so it will create a fresh one.
         yield return new WaitForSeconds(3);
-        //SceneManager.LoadScene(1);
         SceneManager.LoadScene(0);
 
         LevelChanger.buttonClicked = false;

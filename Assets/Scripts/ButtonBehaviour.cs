@@ -19,5 +19,9 @@ public class ButtonBehaviour : MonoBehaviour
             BoardManager.move = false;
 
         }
+        if(GameManager.instance.remainingLevelViews == 0)
+        {
+            GameManager.instance.DisableButton();
+        }
     }
 }

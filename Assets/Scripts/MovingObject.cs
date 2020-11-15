@@ -13,6 +13,9 @@ public abstract class MovingObject : MonoBehaviour
 
     public Vector3 spawn;
 
+    public static Vector2 posNow = new Vector2(0, 0);
+
+    private bool canMove = true;
 
 
     // Start is called before the first frame update
@@ -20,7 +23,13 @@ public abstract class MovingObject : MonoBehaviour
     {
         //set the start position of the player
         spawn = new Vector3(0, 0.3f, 0);
+        posNow = new Vector2(0, 0);
         transform.position = spawn;
+
+        if (GameManager.instance.remainingLevelViews <= 0)
+        {
+            GameManager.instance.DisableButton();
+        }
 
         //get component references to BoxCollider2D and Rigidbody2D
         boxCollider = GetComponent<BoxCollider2D>(); 
@@ -30,12 +39,9 @@ public abstract class MovingObject : MonoBehaviour
         inverseMoveTime = 1f / moveTime;
 
     }
+    private Vector2 previousStartPosition = new Vector2(5, 8);
 
-    public static Vector2 posNow = new Vector2(0, 0);
 
-    private bool canMove = true;
-
-    private Vector2 previousStartPosition = new Vector2(5,8);
     //move returns true if it is able to move and false if not
     //takes parameters for x direction, y directin and raycasthit3d to check collision
     protected bool Move (int xDir, int yDir, out RaycastHit2D hit)
@@ -46,7 +52,7 @@ public abstract class MovingObject : MonoBehaviour
         Vector2 end = start + new Vector2 (xDir, yDir);
         posNow = end;
 
-
+   
 
         end[0] = (int)end[0];
         end[1] = (int)end[1];
@@ -77,12 +83,12 @@ public abstract class MovingObject : MonoBehaviour
             previousStartPosition = start;
         }
 
-
         //disable boxCollider so linecast doesn't hit this objects own collider
         boxCollider.enabled = false;
 
         //cast a line from start point to end point by checking collision on blockinglayer
         hit = Physics2D.Linecast(start, end, blockingLayer);
+        //check if you are at the edge of the board
         if (end[0] == -1 || end[1] == -1 || end[0] == (BoardManager.columns) || end[1] == (BoardManager.rows))
         {
             return false;
@@ -90,16 +96,15 @@ public abstract class MovingObject : MonoBehaviour
 
         //re-enable boxCollider after linecast
         boxCollider.enabled = true;
-        //check if you are at the edge of the board
-        //check if anything was hit
-        //Debug.Log("end: " + end);
+
+        //moves the player up a little bit
         end[1] = ((float)(end[1]) + 0.3f);
-        //Debug.Log("end after casting: " + end);
+        //check if anything was hit
 
         if (hit.transform == null && canMove == true)
         {
-            StartCoroutine(SmoothMovement (end));
 
+            StartCoroutine(SmoothMovement (end));
             //return true to say that move was successfull
             return true;
         }

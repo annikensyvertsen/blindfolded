@@ -40,7 +40,10 @@ public class Player : MovingObject
 
         levelText.text = "Level: " + level ;
 
-
+        if (GameManager.instance.remainingLevelViews <= 0)
+        {
+            GameManager.instance.DisableButton();
+        }
         base.Start();
     }
 
@@ -54,7 +57,9 @@ public class Player : MovingObject
     void Update()
     {
         //check that it can only move one step at a time
-        int keyCounter = 0; 
+        int keyCounter = 0;
+
+        
 
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -81,7 +86,6 @@ public class Player : MovingObject
             horizontal = (int)(Input.GetAxisRaw("Horizontal"));
             vertical = (int)(Input.GetAxisRaw("Vertical"));
 
-
             if (horizontal != 0)
             {
                 vertical = 0;
@@ -99,53 +103,92 @@ public class Player : MovingObject
 
     protected override void AttemptMove (int xDir, int yDir)
     {
-        SoundManager.instance.PlaySingle(moveSound);
         //every time the player moves, steps are added. 
         //xDir = 1 if you move one step to the right, -1 if you move to the left
+
         if (BoardManager.move == true)
         {
-            CheckIfSomethingIsHit(xDir, yDir);
+            bool hitSomething = CheckIfSomethingIsHit(xDir, yDir);
+            if (hitSomething)
+            {
+                GameManager.instance.playerLives--;
+                CheckIfGameOver();
+
+
+            }
+
+            animator.SetTrigger("jump");
+            SoundManager.instance.PlaySingle(moveSound);
 
             base.AttemptMove(xDir, yDir);
-            //CheckIfGameOver();
         }
-        
+
 
     }
 
-    private void CheckIfSomethingIsHit(int xDir, int yDir)
+    private bool CheckIfSomethingIsHit(int xDir, int yDir)
     {
         List<Vector3> starPositions = BoardManager.starPositions;
         List<Vector3> enemyPositions = BoardManager.enemyPositions;
         
         List<Vector3> toBeRemoved = new List<Vector3>();
 
+        bool hitAStar = false;
+        bool hitAnEnemy = false;
 
         Vector2 now = MovingObject.posNow + new Vector2(xDir, yDir);
+        //sometimes it does not convert to float on the first move, and since the player has position "x.3f" to be high enough on the board, we have to double check here
+        if(now[1] is int || now[1] == 0 || (now[1] is float && now[1] == 1.0f))
+        {
+            now[1] = ((float)((float)(now[1]) + 0.3f));
+        };
 
         starPositions.ForEach(position =>
         {
             if ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1]))
             {
+                
                 BoardManager.HideElements(true, 1);
+                hitAStar = true;
                 toBeRemoved.Add(position);
+                Debug.Log("catch rat");
                 SoundManager.instance.PlaySingle(catchRatSound);
+
+                GameObject viewSeeWorldButton = GameObject.Find("SeeWorldButton");
+                viewSeeWorldButton.GetComponent<Button>().enabled = true;
+                viewSeeWorldButton.GetComponent<Button>().interactable = true;
             }
         });
+
         enemyPositions.ForEach(position =>
         {
-            if ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1]))
+            /*Debug.Log("enemyposition? " + position + now);
+            Debug.Log("is it true? " + ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1])));
+            Debug.Log("first? " + (position[0] == now[0]));
+            Debug.Log("second? " + ((float)((float)(position[1]) + 0.3f) == (float)now[1]));*/
+
+            if ((position[0] == now[0]) && (((float)((float)(position[1]) + 0.3f) == (float)now[1])) || (position[1] == now[1]))
             {
+                hitAnEnemy = true;
                 BoardManager.HideElements(true, 1);
                 toBeRemoved.Add(position);
                 SoundManager.instance.PlaySingle(walkOnEnemySound);
-
             }
+                
         });
         toBeRemoved.ForEach(elementToRemove =>
         {
-            starPositions.Remove(elementToRemove);
+            if (hitAStar)
+                starPositions.Remove(elementToRemove);
+            else if (hitAnEnemy)
+                enemyPositions.Remove(elementToRemove);
         });
+        if (hitAnEnemy)
+        {
+            Debug.Log("hit");
+            return true;
+        }
+        return false;
 
     }
 
@@ -156,20 +199,21 @@ private void OnTriggerEnter2D (Collider2D other)
         {
            // Invoke("Restart", restartLevelDelay);
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-            enabled = false;
+            if (GameManager.instance.remainingLevelViews <= 0)
+            {
+                GameManager.instance.DisableButton();
+            }
         }
-        else if( other.tag == "Star")
+        else if(other.tag == "Star")
         {
             //you should only get more possibilites to see the world if you have less than three
             if(GameManager.instance.remainingLevelViews < 3)
             {
                 GameManager.instance.remainingLevelViews += 1;
             }
-            
-            //Disable the star object the player collided with.
 
-            other.gameObject.SetActive (false); 
+            //Disable the star object the player collided with.
+            other.gameObject.SetActive(false); 
         }
         else if (other.tag == "Enemy")
         {
@@ -190,14 +234,14 @@ private void OnTriggerEnter2D (Collider2D other)
     private void Restart()
     {
         //SceneManager.LoadScene(0);
-
+        GameManager.instance.remainingLevelViews = 3;
         SceneManager.LoadScene(1);
     }
 
 
     private void CheckIfGameOver()
     {
-        if (lives <= 0)
+        if (GameManager.instance.playerLives <= 0)
         {
             GameManager.instance.GameOver();
             SoundManager.instance.music2Source.Stop();
