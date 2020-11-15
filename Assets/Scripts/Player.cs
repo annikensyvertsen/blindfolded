@@ -36,9 +36,9 @@ public class Player : MovingObject
 
         seeWorld = GameManager.instance.seeWorld;
 
-        levelText = GameObject.Find("LevelProgressText").GetComponent<Text>();
+        //levelText = GameObject.Find("LevelProgressText").GetComponent<Text>();
 
-        levelText.text = "Level: " + level ;
+        //levelText.text = "Level: " + level ;
 
         if (GameManager.instance.remainingLevelViews <= 0)
         {
@@ -56,6 +56,12 @@ public class Player : MovingObject
 
     void Update()
     {
+        if(GameManager.instance.showLevelProgressText == true)
+        {
+            levelText = GameObject.Find("LevelProgressText").GetComponent<Text>();
+
+            levelText.text = "Level: " + level;
+        }
         //check that it can only move one step at a time
         int keyCounter = 0;
 
@@ -108,18 +114,15 @@ public class Player : MovingObject
 
         if (BoardManager.move == true)
         {
+            SoundManager.instance.PlayJump(moveSound);
+
             bool hitSomething = CheckIfSomethingIsHit(xDir, yDir);
             if (hitSomething)
             {
                 GameManager.instance.playerLives--;
                 CheckIfGameOver();
-
-
             }
-
             animator.SetTrigger("jump");
-            SoundManager.instance.PlaySingle(moveSound);
-
             base.AttemptMove(xDir, yDir);
         }
 

@@ -7,6 +7,8 @@ public class SoundManager : MonoBehaviour
     // Start is called before the first frame update
 
     public AudioSource efxSource;
+    public AudioSource efxSource2;
+
     public AudioSource music1Source;
     public AudioSource music2Source;
 
@@ -25,6 +27,12 @@ public class SoundManager : MonoBehaviour
         };
         DontDestroyOnLoad(gameObject);
         
+    }
+
+    public void PlayJump(AudioClip clip)
+    {
+        efxSource2.clip = clip;
+        efxSource2.Play();
     }
 
     public void PlaySingle(AudioClip clip)

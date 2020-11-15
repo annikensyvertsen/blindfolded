@@ -30,10 +30,13 @@ public class GameManager : MonoBehaviour
 
     public GameObject viewSeeWorldButton;
 
+    public bool skipIntro = false;
 
     private GameObject levelImage;
     private GameObject godImage;
     private GameObject wonImage;
+    private GameObject storyImage;
+    private GameObject skipIntroButton;
     private bool doingSetup = true;
 
 
@@ -95,16 +98,22 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    public bool startGame = false;
 
+    public bool showLevelProgressText = false;
+    public bool startGame = false;
     //Initializes the game for each level.
     void InitGame()
     {
         //Call the SetupScene function of the BoardManager script, pass it current level number.
         doingSetup = true;
+        skipIntro = false;
 
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
+
+
+        levelImage.SetActive(false);
+
 
         godImage = GameObject.Find("God");
         godImage.SetActive(false);
@@ -116,24 +125,86 @@ public class GameManager : MonoBehaviour
 
         viewSeeWorldButton = GameObject.Find("SeeWorldButton");
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
-
-
-
-        levelImage.SetActive(true);
-        Invoke("HideLevelImage", levelStartDelay);
+        Debug.Log("level????????" + level);
+        if(level == 1 && skipIntro == false)
+        {
+            Debug.Log("it sure isnt" + skipIntro);
+            storyImage = GameObject.Find("Story").GetComponent<SpriteRenderer>().gameObject;
+            skipIntroButton = GameObject.Find("SkipIntroButton");
+            storyImage.GetComponent<SpriteRenderer>().gameObject.SetActive(true);
+            StoryTelling();
+        }
+        else
+        {
+            skipIntro = true;
+            levelImage.SetActive(true);
+            GameObject.Find("SkipIntroButton").SetActive(false);
+            GameObject.Find("Story").SetActive(false);
+            Invoke("HideLevelImage", levelStartDelay);
+        }
 
         boardScript.SetupScene(level);
 
     }
+
+    public void StoryTelling()
+    {
+        StartCoroutine(storyWaiter());    
+    }
+
+    IEnumerator storyWaiter()
+    {
+        int count = 1;
+        while ((count < 6) && (skipIntro == false))
+        {
+            count++;
+            //yield return new WaitForSeconds(6);
+            yield return new WaitForSeconds(2);
+            if(skipIntro == false)
+            {
+                yield return new WaitForSeconds(2);
+            }
+            if (skipIntro == false)
+            {
+                yield return new WaitForSeconds(2);
+            }
+
+            ChangePhoto(count);
+        }
+        if ((count >= 6) || skipIntro == true)
+        {
+            skipIntroButton.SetActive(false);
+            storyImage.GetComponent<SpriteRenderer>().gameObject.SetActive(false);
+
+            levelImage.SetActive(true);
+            Invoke("HideLevelImage", levelStartDelay);
+        }
+       
+
+    }
+
+    public void ChangePhoto(int count)
+    {
+        Sprite newSprite = Resources.Load<Sprite>("story" + count.ToString());
+        GameObject storyimg = GameObject.Find("Story");
+        storyimg.GetComponent<SpriteRenderer>().sprite = newSprite;
+    }
+
+
     public void HideLevelImage()
     {
         levelImage.SetActive(false);
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(true);
         viewSeeWorldButton.GetComponent<Button>().interactable = true;
+        BoardManager.HideElements(true, 1);
 
+        showLevelProgressText = true;
 
         doingSetup = false;
     }
+
+
+
     public void DisableButton()
     {
         if (GameManager.instance.remainingLevelViews <= 0)
@@ -141,15 +212,6 @@ public class GameManager : MonoBehaviour
              viewSeeWorldButton.GetComponent<Button>().interactable = false;
         }
 
-            
-
-        /*if (GameManager.instance.remainingLevelViews <= 0)
-        {
-            if(viewSeeWorldButton != null)
-                {
-                    viewSeeWorldButton.GetComponent<Button>().interactable = false;
-                }
-        }*/
        
     }
     void Update()
@@ -185,10 +247,20 @@ public class GameManager : MonoBehaviour
 
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
 
-        //BoardManager.move = false;
         enabled = false;
         BoardManager.move = false;
         StartCoroutine(waitForLevel());
+    }
+
+    public void StartOver()
+    {
+        enabled = false;
+        SoundManager.instance.music2Source.Stop();
+        SceneManager.LoadScene(0);
+
+        LevelChanger.buttonClicked = false;
+        Destroy(gameObject);
+        SoundManager.instance.music1Source.Play();
 
 
     }
@@ -222,6 +294,7 @@ public class GameManager : MonoBehaviour
 
         LevelChanger.buttonClicked = false;
         Destroy(gameObject);
+        SoundManager.instance.music1Source.Play();
     }
 
 }
