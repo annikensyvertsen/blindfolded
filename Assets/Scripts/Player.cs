@@ -36,10 +36,6 @@ public class Player : MovingObject
 
         seeWorld = GameManager.instance.seeWorld;
 
-        //levelText = GameObject.Find("LevelProgressText").GetComponent<Text>();
-
-        //levelText.text = "Level: " + level ;
-
         if (GameManager.instance.remainingLevelViews <= 0)
         {
             GameManager.instance.DisableButton();
@@ -151,10 +147,9 @@ public class Player : MovingObject
             if ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1]))
             {
                 
-                BoardManager.HideElements(true, 1);
+                BoardManager.HideElements(true, 1, true);
                 hitAStar = true;
                 toBeRemoved.Add(position);
-                Debug.Log("catch rat");
                 SoundManager.instance.PlaySingle(catchRatSound);
 
                 GameObject viewSeeWorldButton = GameObject.Find("SeeWorldButton");
@@ -165,11 +160,6 @@ public class Player : MovingObject
 
         enemyPositions.ForEach(position =>
         {
-            /*Debug.Log("enemyposition? " + position + now);
-            Debug.Log("is it true? " + ((position[0] == now[0]) && ((float)((float)(position[1]) + 0.3f) == (float)now[1])));
-            Debug.Log("first? " + (position[0] == now[0]));
-            Debug.Log("second? " + ((float)((float)(position[1]) + 0.3f) == (float)now[1]));*/
-
             if ((position[0] == now[0]) && (((float)((float)(position[1]) + 0.3f) == (float)now[1])) || (position[1] == now[1]))
             {
                 hitAnEnemy = true;
@@ -188,7 +178,6 @@ public class Player : MovingObject
         });
         if (hitAnEnemy)
         {
-            Debug.Log("hit");
             return true;
         }
         return false;

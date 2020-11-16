@@ -11,6 +11,7 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource music1Source;
     public AudioSource music2Source;
+    public AudioSource music3Source;
 
     public static SoundManager instance = null;
 

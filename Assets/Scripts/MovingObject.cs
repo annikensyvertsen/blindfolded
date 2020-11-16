@@ -148,11 +148,4 @@ public abstract class MovingObject : MonoBehaviour
             return;
     }
 
-
-
-    // Update is called once per frame
-    void Update()
-    {
-       
-    }
 }

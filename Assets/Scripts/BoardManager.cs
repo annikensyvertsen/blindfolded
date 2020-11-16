@@ -117,27 +117,41 @@ public class BoardManager : MonoBehaviour
 
 
     //this function is supposed to hide and show elements when the user clicks the "seeWorld" button, but only when three levels
-    public static void HideElements(bool seeWorld, int timer = 3)
+    public static void HideElements(bool seeWorld, int timer = 1, bool rat = false)
     {
         //should be called with true at the start
         if (seeWorld == true)
         {
             //show elements
-            starPositions.ForEach(tile =>
+            if(rat == false)
             {
-                GameObject tileChoice = starCopyTiles[Random.Range(0, starCopyTiles.Length)];
-                GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
-                instance.transform.SetParent(starHolder);
-            });
-            enemyPositions.ForEach(tile =>
+             starPositions.ForEach(tile =>
+                {
+                    GameObject tileChoice = starCopyTiles[Random.Range(0, starCopyTiles.Length)];
+                    GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(starHolder);
+                });
+                enemyPositions.ForEach(tile =>
+                {
+                    GameObject tileChoice = enemyCopyTiles[Random.Range(0, enemyCopyTiles.Length)];
+                    GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(enemyHolder);
+                });
+            }
+           
+            if(rat == true)
             {
-                GameObject tileChoice = enemyCopyTiles[Random.Range(0, enemyCopyTiles.Length)];
-                GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
-                instance.transform.SetParent(enemyHolder);
-            });
+                starPositions.ForEach(tile =>
+                {
+                    GameObject tileChoice = starCopyTiles[Random.Range(0, starCopyTiles.Length)];
+                    GameObject instance = Instantiate(tileChoice, tile, Quaternion.identity) as GameObject;
+                    instance.transform.SetParent(starHolder);
+                });
+            }
             GameManager.instance.timeRemaining = timer;
             GameManager.instance.timerIsRunning = true;
             GameManager.instance.DisableButton(); 
+
 
         }
         else

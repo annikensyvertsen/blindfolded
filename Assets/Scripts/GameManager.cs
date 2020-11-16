@@ -111,6 +111,7 @@ public class GameManager : MonoBehaviour
         levelImage = GameObject.Find("LevelImage");
         levelText = GameObject.Find("LevelText").GetComponent<Text>();
 
+        BoardManager.move = false;
 
         levelImage.SetActive(false);
 
@@ -125,10 +126,8 @@ public class GameManager : MonoBehaviour
 
         viewSeeWorldButton = GameObject.Find("SeeWorldButton");
         viewSeeWorldButton.GetComponent<Button>().gameObject.SetActive(false);
-        Debug.Log("level????????" + level);
         if(level == 1 && skipIntro == false)
         {
-            Debug.Log("it sure isnt" + skipIntro);
             storyImage = GameObject.Find("Story").GetComponent<SpriteRenderer>().gameObject;
             skipIntroButton = GameObject.Find("SkipIntroButton");
             storyImage.GetComponent<SpriteRenderer>().gameObject.SetActive(true);
@@ -162,11 +161,11 @@ public class GameManager : MonoBehaviour
             yield return new WaitForSeconds(2);
             if(skipIntro == false)
             {
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(3);
             }
             if (skipIntro == false)
             {
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(3);
             }
 
             ChangePhoto(count);
@@ -199,7 +198,7 @@ public class GameManager : MonoBehaviour
         BoardManager.HideElements(true, 1);
 
         showLevelProgressText = true;
-
+        BoardManager.move = true;
         doingSetup = false;
     }
 
@@ -262,7 +261,6 @@ public class GameManager : MonoBehaviour
         Destroy(gameObject);
         SoundManager.instance.music1Source.Play();
 
-
     }
 
     public void CompletedGame()
@@ -270,8 +268,10 @@ public class GameManager : MonoBehaviour
 
         wonImage.SetActive(true);
         enabled = false;
+        SoundManager.instance.music2Source.Stop();
+        SoundManager.instance.music3Source.Play();
 
-        StartCoroutine(waiter());
+        StartCoroutine(waiter(15));
 
     }
 
@@ -286,14 +286,16 @@ public class GameManager : MonoBehaviour
 
     }
 
-    IEnumerator waiter()
+    IEnumerator waiter(int count = 3)
     {
         //when player hits enemy and dies, the game waits three seconds and then passes back to main menu. Also makes sure to destroy the gameobject so it will create a fresh one.
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(count);
         SceneManager.LoadScene(0);
 
         LevelChanger.buttonClicked = false;
         Destroy(gameObject);
+        SoundManager.instance.music2Source.Stop();
+        SoundManager.instance.music3Source.Stop();
         SoundManager.instance.music1Source.Play();
     }
 
